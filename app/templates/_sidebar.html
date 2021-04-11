@@ -15,7 +15,7 @@
         <div class="side-avata-bg">
             <img src="{{ url_for('static', filename='img/' + datetime|strftime("%Y_%m_%d") + '.jpg') }}" onerror="this.src='{{ url_for('static', filename='img/default_avata_bg.jpg') }}'">
         </div>
-        <span>
+        <span id="adminlogin">
             <a href="{{ url_for('auth.login') }}">
                <img src="{{ url_for('static', filename='img/avata.jpg')+'?'+datetime|strftime }}">
             </a>

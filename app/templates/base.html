@@ -108,6 +108,15 @@
             hljs.highlightAll();
             hljs.initLineNumbersOnLoad();
         </script>
+
+        <script>
+            $("#adminlogin").mouseenter(function(){
+                $(".side-avata span img").css('animation','rotate 1s linear')
+            })
+            $("#adminlogin").mouseleave(function(){
+                $(".side-avata span img").css('animation','')
+            })
+        </script>
     {% endblock script %}
 {% endblock body %}
 </body>

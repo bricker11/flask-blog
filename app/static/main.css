@@ -171,8 +171,17 @@ body {
 	0%{
 		transform: rotateZ(0deg);/*从0度开始*/
 	}
-	100%{
-		transform: rotateZ(360deg);/*360度结束*/
+	25%{
+		transform: rotateZ(20deg);
+	}
+    50%{
+		transform: rotateZ(0deg);
+	}
+    75%{
+		transform: rotateZ(-20deg);
+	}
+    100%{
+		transform: rotateZ(0deg);
 	}
 }
 
