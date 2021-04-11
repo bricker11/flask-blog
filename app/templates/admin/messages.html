@@ -1,0 +1,83 @@
+{% extends 'admin/base.html' %}}
+
+{% block content %}
+
+<div class="admin-content">
+    <div class="layui-container">
+        <!-- 页面标题 -->
+        <h2 class="layui-inline">管理留言</h2>
+        <!-- 数据表格 -->
+        <div class="manage-table">
+            <table id="messagelist" lay-filter="messagelist"></table>
+        </div>
+        <!-- 表格内嵌按钮 -->
+        <div class="deletebtn" hidden>
+            <button type="button" class="layui-btn layui-btn-xs layui-btn-danger delete_btn" style="border-radius: 3px">删除</button>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+
+{{ super() }}
+<script>
+    //渲染数据表格
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            elem: '#messagelist'
+            ,height: 500
+            ,url: '{{ url_for('auth.messagelist_api') }}' //数据接口
+            ,loading: true
+            ,cols: [[ //表头
+            {field: 'sno', title: '序号', width:60, align: 'center'}
+            ,{field: 'mid', title: 'ID', width:60, align:'center'}
+            ,{field: 'author', title: '用户名', width:150, align:'center'}
+            ,{field: 'content', title: '留言内容', width:350, align:'center'}
+            ,{field: 'email', title: '用户邮箱', width:200, align:'center'}
+            ,{field: 'date', title: '留言时间', width: 200, align:'center'}
+            ,{field: 'delete', title: '操作', width: 80, align:'center', templet: '.deletebtn'}
+            ]]
+            ,page: true //开启分页
+            ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                var result;
+                if(this.page.curr){
+                result = res.data.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+                }
+                else{
+                result=res.data.slice(0,this.limit);
+                }
+                return {
+                "code": res.code, //解析接口状态
+                "msg": res.msg, //解析提示文本
+                "count": res.count, //解析数据长度
+                "data": result //解析数据列表
+                };
+            }
+            //必须等表格渲染完成后才能绑定事件
+            ,done:function (res){
+                //为内嵌按钮绑定事件
+                $(".delete_btn").click(function(e) {
+                    var ind = (Number(e.target.parentNode.parentNode.parentNode.childNodes[0].childNodes[0].innerText)-1).toString()
+                    var mid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                    layer.open({
+                        content: '确认删除？',
+                        yes: function(index, layero){
+                            $.post('{{ url_for('auth.deletemessage_api') }}',{message_id: mid},function (res){
+                                if(res.status == '0')
+                                    $("[data-index=" + ind + "]").remove()
+                                else
+                                    layer.msg('删除失败，留言不存在')
+                            })
+                            layer.close(index);
+                        }
+                    });//end of layer.open
+                });//end of click
+            }
+        });//end of table.render
+    });//end of layui.use
+</script>
+
+{% endblock script %}

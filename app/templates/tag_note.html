@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import pager_tag %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 面包屑导航 -->
+        <div class="map">
+            <span class="layui-breadcrumb">
+                <a href="{{ url_for('main.index') }}">首页</a>
+                <a href="javascript:;">笔记标签</a>
+                <a><cite>{{ tag.name }}</cite></a>
+            </span>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                <!-- 模板修改部分 -->
+                {% for note in tag_notes %}
+                    <div class="note-card">
+                        <a href="javascript:;">
+                            <h2>{{ note.title }}</h2>
+                        </a>
+                        <div class="note-content">
+                            {{ note.content_html|safe }}
+                        </div>
+                        <div class="note-msg">
+                            <span>
+                                <i class="layui-icon">&#xe705;</i>
+                                <a href="{{ url_for('main.category_note',cate_id=note.category.id) }}">{{ note.category.name }}</a>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe68d;</i>
+                                <span>{{ note.date|strftime("%Y-%m-%d") }}</span>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <!-- 分页导航 -->
+                {% if not tag_notes %}
+                    <div class="post-card">
+                        <p style="margin-top: 30px;text-align: center">此处空空如也~</p>
+                    </div>
+                {% else %}
+                    {{ pager_tag(pagination,'main.tag_note',tag.id) }}
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar_note.html' %}
+        </div>
+    </div>
+{% endblock content %}

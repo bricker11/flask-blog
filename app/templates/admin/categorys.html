@@ -1,0 +1,153 @@
+{% extends 'admin/base.html' %}}
+
+{% block content %}
+
+<div class="admin-content">
+    <div class="layui-container">
+        <!-- 页面标题 -->
+        <h2 class="layui-inline">管理分类</h2>
+        <!-- 新增按钮 -->
+        <button type="button" class="layui-btn layui-btn-xs new_btn" style="border-radius: 3px;margin: 10px;height: 25px">新增分类</button>
+        <!-- 数据表格 -->
+        <div class="manage-table">
+            <table id="categorylist" lay-filter="categorylist"></table>
+        </div>
+        <!-- 表格内嵌按钮 -->
+        <div class="optionbtn" hidden>
+            <button type="button" class="layui-btn layui-btn-xs layui-btn-normal edit_btn" style="border-radius: 3px">编辑</button>
+            <button type="button" class="layui-btn layui-btn-xs layui-btn-danger delete_btn" style="border-radius: 3px">删除</button>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+
+{{ super() }}
+<script>
+    //新增分类按钮绑定事件
+    $(".new_btn").click(function(e) {
+        var content = '<span style="display: inline-block;padding: 10px;margin-top:10px">名称：</span><div class="layui-inline"><input type="text" class="layui-input" id="category_edit" style="padding: 10px" name="category_name" value=""></div>'
+        layer.open({
+            type: 1,
+            title: '新增分类',
+            area: '260px',
+            content: content,
+            btn: ['确定'],
+            yes: function(index, layero){
+                category_name = $('#category_edit').val()
+                if(category_name != '')
+                {
+                    $.post('{{ url_for('auth.newcategory_api') }}',{category_name: category_name},function(res){
+                    if(res.status == '0')
+                    {
+                        location.reload()
+                    }
+                    else
+                        layer.msg('分类已存在')
+                });
+                }
+                else
+                    layer.msg('内容不能为空')
+                layer.close(index);
+            },
+            cancel: function(){
+            }
+        });//end of layer.open
+    });//end of click
+    //渲染数据表格
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            elem: '#categorylist'
+            ,height: 500
+            ,url: '{{ url_for('auth.categorylist_api') }}' //数据接口
+            ,loading: true
+            ,cols: [[ //表头
+            {field: 'sno', title: '序号', width:60, align: 'center'}
+            ,{field: 'cid', title: 'ID', width:80, align:'center'}
+            ,{field: 'name', title: '分类名称', width:300, align:'center'}
+            ,{field: 'date', title: '创建时间', width: 200, align:'center'}
+            ,{field: 'option', title: '操作', width: 160, align:'center', templet: '.optionbtn'}
+            ]]
+            ,page: true //开启分页
+            ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                var result;
+                if(this.page.curr){
+                result = res.data.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+                }
+                else{
+                result=res.data.slice(0,this.limit);
+                }
+                return {
+                "code": res.code, //解析接口状态
+                "msg": res.msg, //解析提示文本
+                "count": res.count, //解析数据长度
+                "data": result //解析数据列表
+                };
+            }
+            //必须等表格渲染完成后才能绑定事件
+            ,done:function (res){
+                //为内嵌按钮绑定事件
+                $(".edit_btn").click(function(e) {
+                    var ind = (Number(e.target.parentNode.parentNode.parentNode.childNodes[0].childNodes[0].innerText)-1).toString()
+                    var cid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                    cl = e.target.parentNode.parentNode.parentNode.childNodes[2].childNodes[0].classList[1]
+
+                    $.post('{{ url_for('auth.editcategory_api') }}', {category_id: cid}, function(str){
+                        name = str.name
+                        var content = '<span style="display: inline-block;padding: 10px;margin-top:10px">名称：</span><div class="layui-inline"><input type="text" class="layui-input" id="category_edit" style="padding: 10px" name="category_name" value="'+ name +'"></div>'
+                        layer.open({
+                            type: 1,
+                            title: '编辑分类',
+                            area: '260px',
+                            content: content,
+                            btn: ['修改'],
+                            yes: function(index, layero){
+                                var newname = $('#category_edit').val()
+                                if(newname != '')
+                                {
+                                    $.post('{{ url_for('auth.editcategory_api2') }}', {category_id: cid,category_name: newname}, function(str){
+                                        if(str.status == '0')
+                                            $("[data-index=" + ind +"] ."+cl).text(newname)
+                                        else if(str.status == '1')
+                                            layer.msg('修改失败，分类不存在')
+                                        else
+                                            layer.msg('默认分类无法修改')
+                                    });
+                                }
+                                else
+                                    layer.msg('内容不能为空')
+                                layer.close(index);
+                            },
+                            cancel: function(){
+                            }
+                        });//end of layer.open
+                    });//end of post
+                });//end of click
+
+                $(".delete_btn").click(function(e) {
+                    var ind = (Number(e.target.parentNode.parentNode.parentNode.childNodes[0].childNodes[0].innerText)-1).toString()
+                    var cid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                    layer.open({
+                        content: '确认删除？',
+                        yes: function(index, layero){
+                            $.post('{{ url_for('auth.deletecategory_api') }}',{category_id: cid},function (res){
+                                if(res.status == '0')
+                                    $("[data-index=" + ind + "]").remove()
+                                else if(res.status == '1')
+                                    layer.msg('删除失败，分类不存在')
+                                else
+                                    layer.msg('默认分类无法删除')
+                            })
+                            layer.close(index);
+                        }
+                    });//end of layer.open
+                });//end of click
+            }
+        });//end of table.render
+    });//end of layui.use
+</script>
+
+{% endblock script %}

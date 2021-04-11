@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import pager,message_board %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 面包屑导航 -->
+        <div class="map">
+            <span class="layui-breadcrumb">
+              <a href="{{ url_for('main.index') }}">首页</a>
+              <a><cite>留言</cite></a>
+            </span>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                <div class="message-list">
+                    <div class="message-title">
+                        <h2>留言</h2>
+                    </div>
+                    <!-- 留言板 -->
+                    {{ message_board(total,messages,replies,interact_from,'main.message') }}
+                </div>
+                <!-- 分页导航 -->
+                {% if not messages %}
+                    <div class="post-card">
+                        <p style="margin-top: 30px;text-align: center">还没有任何留言哟~</p>
+                    </div>
+                {% else %}
+                    {{ pager(pagination,'main.message') }}
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar.html' %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        // 留言模块
+        $('#message_board #msg_submit').on('click',function(){
+            var content = $('#msg_content').val();
+            var author = $('#msg_author').val();
+            var email = $('#msg_email').val();
+            var password = $('#msg_password').val();
+            $.post('{{ url_for('main.message_api') }}',{content: content,author: author,
+                                                        email: email,password: password},function (res){
+                if(res.status == '0')
+                {
+                    layer.msg('发布成功')
+                    location.reload()
+                }
+                else if(res.status == '1')
+                    layer.msg('邮箱格式不正确')
+                else
+                    layer.msg('内容不能有空')
+            })
+        })
+
+        // 留言回复模块
+        $('.message_reply').on('click',function (e){
+            var node_id = e.target.parentNode.parentNode.id
+            // 关闭其他回复框
+            $('.rp_form').remove()
+            // 创建本留言的回复框
+            $('#'+node_id+' .list_msg').append('<div class="layui-form rp_form" style="margin: 5px 0">\
+                                                    <div class="layui-form-item">\
+                                                        <textarea id="rp_content" class="layui-textarea" rows="5" cols="30" placeholder="留下你的只言片语吧~" name="content"></textarea>\
+                                                    </div>\
+                                                    <div class="layui-form-item layui-row layui-col-space5">\
+                                                        <div class="layui-row layui-col-md4">\
+                                                            <input type="text" id="rp_author" class="layui-input" placeholder="你的名字" name="author">\
+                                                        </div>\
+                                                        <div class="layui-row layui-col-md4">\
+                                                            <input type="text" id="rp_email" class="layui-input" placeholder="你的邮箱" name="email">\
+                                                        </div>\
+                                                        <div class="layui-row layui-col-md4">\
+                                                            <input type="password" id="rp_password" class="layui-input" placeholder="口令（管理员填写）" name="password">\
+                                                        </div>\
+                                                    </div>\
+                                                    <div class="layui-inline">\
+                                                        <input type="submit" id="rp_submit" class="layui-btn layui-btn-xs layui-btn-normal" value="回复">\
+                                                        <input type="submit" id="rp_cancel" class="layui-btn layui-btn-xs layui-btn-normal" value="取消">\
+                                                    </div>\
+                                                </div>')
+            // 修改按钮大小
+            $('#rp_submit').css('height','30px')
+            $('#rp_submit').css('width','50px')
+            $('#rp_cancel').css('height','30px')
+            $('#rp_cancel').css('width','50px')
+            // 绑定提交事件
+            $('#rp_submit').on('click',function(){
+                var content = $('#rp_content').val();
+                var author = $('#rp_author').val();
+                var email = $('#rp_email').val();
+                var password = $('#rp_password').val();
+                var message_id = node_id.slice(3)
+                $.post('{{ url_for('main.message_reply_api') }}',
+                    {code: 0,content: content,author: author,email: email,message_id: message_id,password: password},function (res){
+                    // 实时回显提交的回复
+                    if(res.status == '0')
+                    {
+                        $('.rp_form').remove();
+                        location.reload();
+                    }
+                    else if(res.status == '1')
+                        layer.msg('邮箱格式不正确')
+                    else
+                        layer.msg('内容不能有空')
+                })
+            })
+            // 绑定取消事件
+            $('#rp_cancel').on('click',function (e){
+                $('.rp_form').remove()
+            })
+        })
+
+        // 回复继续回复模块
+        $('.reply_reply').on('click',function (e){
+            var node_id = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.id
+            var node2_id = e.target.parentNode.parentNode.id
+            var origin_author = e.target.parentNode.parentNode.childNodes[1].innerText
+            console.log(origin_author)
+            // 关闭其他回复框
+            $('.rp_form').remove()
+            // 创建本留言的回复框
+            $('#'+node2_id).append('<div class="layui-form rp_form" style="margin: 5px 0">\
+                                        <div class="layui-form-item">\
+                                            <textarea id="rp_content" class="layui-textarea" rows="5" cols="30" placeholder="留下你的只言片语吧~" name="content"></textarea>\
+                                        </div>\
+                                        <div class="layui-form-item layui-row layui-col-space5">\
+                                            <div class="layui-row layui-col-md4">\
+                                                <input type="text" id="rp_author" class="layui-input" placeholder="你的名字" name="author">\
+                                            </div>\
+                                            <div class="layui-row layui-col-md4">\
+                                                <input type="text" id="rp_email" class="layui-input" placeholder="你的邮箱" name="email">\
+                                            </div>\
+                                            <div class="layui-row layui-col-md4">\
+                                                <input type="password" id="rp_password" class="layui-input" placeholder="口令（管理员填写）" name="password">\
+                                            </div>\
+                                        </div>\
+                                        <div class="layui-inline">\
+                                            <input type="submit" id="rp_submit" class="layui-btn layui-btn-xs layui-btn-normal" value="回复">\
+                                            <input type="submit" id="rp_cancel" class="layui-btn layui-btn-xs layui-btn-normal" value="取消">\
+                                        </div>\
+                                    </div>')
+            // 修改按钮大小
+            $('#rp_submit').css('height','30px')
+            $('#rp_submit').css('width','50px')
+            $('#rp_cancel').css('height','30px')
+            $('#rp_cancel').css('width','50px')
+            // 绑定提交事件
+            $('#rp_submit').on('click',function (){
+                var content = $('#rp_content').val();
+                var author = $('#rp_author').val();
+                var email = $('#rp_email').val();
+                var password = $('#rp_password').val();
+                var message_id = node_id.slice(3);
+                $.post('{{ url_for('main.message_reply_api') }}',
+                    {code: 1,content: content,author: author,email: email,message_id: message_id,password: password,origin_author: origin_author},function (res){
+                    // 实时回显提交的回复
+                    if(res.status == '0')
+                    {
+                        $('.rp_form').remove()
+                        location.reload()
+                    }
+                    else if(res.status == '1')
+                        layer.msg('邮箱格式不正确')
+                    else
+                        layer.msg('内容不能有空')
+                })
+            })
+            // 绑定取消事件
+            $('#rp_cancel').on('click',function (e){
+                $('.rp_form').remove()
+            })
+        })
+    </script>
+{% endblock script %}

@@ -1,0 +1,196 @@
+<!-- 底部分页 -->
+{% macro pager(pagination,endpoint) %}
+<div class="layui-laypage post-page">
+    <a {% if pagination.has_prev %} href="{{ url_for(endpoint,page=pagination.page - 1) }}" {% else %} href="javascript:;" {% endif %}>上一页</a>
+    {% for page in range(1,pagination.pages + 1) %}
+        {% if page == pagination.page %}
+            <a href="{{ url_for(endpoint,page=page) }}" style="color: #fff;background-color: #227eaa">{{ page }}</a>
+        {% else %}
+            <a href="{{ url_for(endpoint,page=page) }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+    <a {% if pagination.has_next %} href="{{ url_for(endpoint,page=pagination.page + 1) }}" {% else %} href="javascript:;" {% endif %}>下一页</a>
+</div>
+{% endmacro %}
+
+{% macro pager_cate(pagination,endpoint,cate_id) %}
+<div class="layui-laypage post-page">
+    <a {% if pagination.has_prev %} href="{{ url_for(endpoint,cate_id=cate_id,page=pagination.page - 1) }}" {% else %} href="javascript:;" {% endif %}>上一页</a>
+    {% for page in range(1,pagination.pages + 1) %}
+        {% if page == pagination.page %}
+            <a href="{{ url_for(endpoint,cate_id=cate_id,page=page) }}" style="color: #fff;background-color: #227eaa">{{ page }}</a>
+        {% else %}
+            <a href="{{ url_for(endpoint,cate_id=cate_id,page=page) }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+    <a {% if pagination.has_next %} href="{{ url_for(endpoint,cate_id=cate_id,page=pagination.page + 1) }}" {% else %} href="javascript:;" {% endif %}>下一页</a>
+</div>
+{% endmacro %}
+
+{% macro pager_tag(pagination,endpoint,tag_id) %}
+<div class="layui-laypage post-page">
+    <a {% if pagination.has_prev %} href="{{ url_for(endpoint,tag_id=tag_id,page=pagination.page - 1) }}" {% else %} href="javascript:;" {% endif %}>上一页</a>
+    {% for page in range(1,pagination.pages + 1) %}
+        {% if page == pagination.page %}
+            <a href="{{ url_for(endpoint,tag_id=tag_id,page=page) }}" style="color: #fff;background-color: #227eaa">{{ page }}</a>
+        {% else %}
+            <a href="{{ url_for(endpoint,tag_id=tag_id,page=page) }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+    <a {% if pagination.has_next %} href="{{ url_for(endpoint,tag_id=tag_id,page=pagination.page + 1) }}" {% else %} href="javascript:;" {% endif %}>下一页</a>
+</div>
+{% endmacro %}
+
+{% macro pager_post(pagination,endpoint,post_id) %}
+<div class="layui-laypage post-page">
+    <a {% if pagination.has_prev %} href="{{ url_for(endpoint,post_id=post_id,page=pagination.page - 1) }}" {% else %} href="javascript:;" {% endif %}>上一页</a>
+    {% for page in range(1,pagination.pages + 1) %}
+        {% if page == pagination.page %}
+            <a href="{{ url_for(endpoint,post_id=post_id,page=page) }}" style="color: #fff;background-color: #227eaa">{{ page }}</a>
+        {% else %}
+            <a href="{{ url_for(endpoint,post_id=post_id,page=page) }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+    <a {% if pagination.has_next %} href="{{ url_for(endpoint,post_id=post_id,page=pagination.page + 1) }}" {% else %} href="javascript:;" {% endif %}>下一页</a>
+</div>
+{% endmacro %}
+
+{% macro comment_board(total,comments,replies,form,endpoint,post_id) %}
+<div class="message-content">
+    <h4><i class="layui-icon">&#xe664;</i>&nbsp;留下你的评论吧~</h4>
+    <div  class="layui-form" id="comment_board">
+        <div class="layui-form-item ">
+            <textarea id="cmt_content" class="layui-textarea" rows="5" cols="30" placeholder="留下你的评论吧~" name="content"></textarea>
+        </div>
+        <div class="layui-form-item layui-row layui-col-space5">
+            <div class="layui-row layui-col-md4">
+                <input type="text" id="cmt_author" class="layui-input" placeholder="你的名字" name="author">
+            </div>
+            <div class="layui-row layui-col-md4">
+                <input type="text" id="cmt_email" class="layui-input" placeholder="你的邮箱" name="email">
+            </div>
+            <div class="layui-row layui-col-md4">
+                <input type="password" id="cmt_password" class="layui-input" placeholder="口令（管理员填写）" name="password">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <input type="submit" id="cmt_submit" class="layui-btn layui-btn-normal" value="发布">
+        </div>
+    </div>
+
+    <h3>已有评论及回复{{ total }}条</h3>
+
+    <ul class="message-item">
+        {% for comment in comments %}
+            <li class="layui-row">
+                <div class="layui-col-md1">
+                    <img src="{{ url_for('static',filename='img/comment_avata.jpg') }}" style="width: 40px;height: 40px;border-radius: 50%">
+                </div>
+                <div class="layui-col-md11" id="cmt{{ comment.id }}">
+                    <strong>{{ comment.author }}</strong>{% if comment.admin_flag %}<span class="layui-badge" style="margin-left: 10px">管理员</span>{% endif %}
+                    <div style="margin: 10px 0">
+                        <p>{{ comment.content }}</p>
+                    </div>
+                    <span class="list_msg" style="display: inline-block;margin-bottom: 10px">
+                        <button class="layui-btn layui-btn-xs layui-btn-primary comment_reply">回复</button>
+                        <span>&nbsp{{ comment.date|strftime }}</span>
+                    </span>
+                    <!-- 回复列表 -->
+                    <ul class="message-item">
+                        {% for reply in replies %}
+                            {% if reply.replied_id == comment.id %}
+                                <li class="layui-row">
+                                    <div class="layui-col-md1">
+                                        <img src="{{ url_for('static',filename='img/comment_avata.jpg') }}" style="width: 40px;height: 40px;border-radius: 50%">
+                                    </div>
+                                    <div class="layui-col-md11" id="rpy{{ reply.id }}">
+                                        <strong>{{ reply.author }}</strong>{% if reply.admin_flag %}<span class="layui-badge" style="margin-left: 10px">管理员</span>{% endif %}
+                                        <div style="margin: 10px 0">
+                                            <p>{{ reply.content }}</p>
+                                        </div>
+                                        <span>
+                                            <button class="layui-btn layui-btn-xs layui-btn-primary reply_reply">回复</button>
+                                            <span>&nbsp{{ reply.date|strftime }}</span>
+                                        </span>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endmacro %}
+
+{% macro message_board(total,messages,replies,form,endpoint) %}
+<div class="message-content">
+    <h4><i class="layui-icon">&#xe664;</i>&nbsp;有什么想对我说的吗~</h4>
+    <div  class="layui-form" id="message_board">
+        <div class="layui-form-item ">
+            <textarea id="msg_content" class="layui-textarea" rows="5" cols="30" placeholder="留下你的只言片语吧~" name="content"></textarea>
+        </div>
+        <div class="layui-form-item layui-row layui-col-space5">
+            <div class="layui-row layui-col-md4">
+                <input type="text" id="msg_author" class="layui-input" placeholder="你的名字" name="author">
+            </div>
+            <div class="layui-row layui-col-md4">
+                <input type="text" id="msg_email" class="layui-input" placeholder="你的邮箱" name="email">
+            </div>
+            <div class="layui-row layui-col-md4">
+                <input type="password" id="msg_password" class="layui-input" placeholder="口令（管理员填写）" name="password">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <input type="submit" id="msg_submit" class="layui-btn layui-btn-normal" value="发布">
+        </div>
+    </div>
+
+    <h3>已有留言及回复{{ total }}条</h3>
+
+    <ul class="message-item">
+        {% for message in messages %}
+            <li class="layui-row">
+                <div class="layui-col-md1">
+                    <img src="{{ url_for('static',filename='img/comment_avata.jpg') }}" style="width: 40px;height: 40px;border-radius: 50%">
+                </div>
+                <div class="layui-col-md11" id="msg{{ message.id }}">
+                    <strong>{{ message.author }}</strong>{% if message.admin_flag %}<span class="layui-badge" style="margin-left: 10px">管理员</span>{% endif %}
+                    <div style="margin: 10px 0">
+                        <p>{{ message.content }}</p>
+                    </div>
+                    <span class="list_msg" style="display: inline-block;margin-bottom: 10px">
+                        <button class="layui-btn layui-btn-xs layui-btn-primary message_reply">回复</button>
+                        <span>&nbsp{{ message.date|strftime }}</span>
+                    </span>
+                    <!-- 回复列表 -->
+                    <ul class="message-item">
+                        {% for reply in replies %}
+                            {% if reply.replied_id == message.id %}
+                                <li class="layui-row">
+                                    <div class="layui-col-md1">
+                                        <img src="{{ url_for('static',filename='img/comment_avata.jpg') }}" style="width: 40px;height: 40px;border-radius: 50%">
+                                    </div>
+                                    <div class="layui-col-md11" id="rpy{{ reply.id }}">
+                                        <strong>{{ reply.author }}</strong>{% if reply.admin_flag %}<span class="layui-badge" style="margin-left: 10px">管理员</span>{% endif %}
+                                        <div style="margin: 10px 0">
+                                            <p>{{ reply.content }}</p>
+                                        </div>
+                                        <span>
+                                            <button class="layui-btn layui-btn-xs layui-btn-primary reply_reply">回复</button>
+                                            <span>&nbsp{{ reply.date|strftime }}</span>
+                                        </span>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endmacro %}
+
+

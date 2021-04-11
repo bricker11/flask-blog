@@ -1,0 +1,17 @@
+{% extends '404.html' %}
+
+{% block title %}
+    <title>500 Errors</title>
+{% endblock title %}
+
+{% block body %}
+    <div class="layui-container" style="text-align: center">
+        <div style="margin-top: 150px">
+            <h2>服务器出错啦，500 Error...</h2>
+        </div>
+        <div style="margin: 50px 0 20px 0">
+            <img src="{{ url_for('static',filename='img/error.gif') }}">
+        </div>
+        <a href="{{ url_for('main.index') }}" style="text-decoration: none;color: #01AAED">返回首页</a>
+    </div>
+{% endblock body %}

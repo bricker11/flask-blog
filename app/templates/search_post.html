@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import pager %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 隐藏的搜索框，手机端显示 -->
+        <div class="phone-search layui-show-xs-block layui-hide-sm">
+            <form class="layui-form" method="post" id="search" action="#">
+                <div class="layui-inline input">
+                    <input type="text" class="layui-input" placeholder="请输入关键词">
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </form>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                <!-- 文章列表 -->
+                {% for post in match_posts %}
+                    <div class="post-card">
+                        <a href="{{ url_for('main.post',post_id=post.id) }}">
+                            <h2>{{ post.title }}</h2>
+                        </a>
+                        {% if post.content_html|content_text|length >= 200 %}
+                            <p>{{ (post.content_html|content_text)[0:200] + '...' }}</p>
+                        {% else %}
+                            <p>{{ post.content_html|content_text }}</p>
+                        {% endif %}
+                        <div class="post-msg">
+                        <span>
+                            <i class="layui-icon">&#xe612;</i>
+                            <a href="javascript:;">{{ admin.nickname }}</a>
+                        </span>
+                        <span>
+                            <i class="layui-icon">&#xe705;</i>
+                            <a href="{{ url_for('main.category',cate_id=post.category.id) }}">{{ post.category.name }}</a>
+                        </span>
+                        <span>
+                            <i class="layui-icon">&#xe68d;</i>
+                            <a href="javascript:;">{{ post.date|strftime }}</a>
+                        </span>
+                        <span>
+                            <i class="layui-icon">&#xe62c;</i>
+                            <a href="javascript:;">{{ post.read_count }}</a>
+                        </span>
+                        <span>
+                            <a href="{{ url_for('main.post',post_id=post.id) }}" class="detail">阅读全文</a>
+                        </span>
+                    </div>
+                    </div>
+                {% endfor %}
+                {% if not match_posts %}
+                    <div class="post-card">
+                        <p style="margin-top: 30px;text-align: center">没有找到相关内容！</p>
+                    </div>
+                {% else %}
+                    <!-- 分页导航 -->
+                    {{ pager(pagination,'main.search_post') }}
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar.html' %}
+        </div>
+    </div>
+{% endblock content %}

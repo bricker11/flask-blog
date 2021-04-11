@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import pager_cate %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 面包屑导航 -->
+        <div class="map">
+            <span class="layui-breadcrumb">
+                <a href="{{ url_for('main.index') }}">首页</a>
+                <a href="javascript:;">分类</a>
+                <a><cite>{{ category.name }}</cite></a>
+            </span>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                <!-- 模板修改部分 -->
+                {% for post in cate_posts %}
+                    <div class="post-card">
+                        <a href="{{ url_for('main.post',post_id=post.id) }}">
+                            <h2>{{ post.title }}</h2>
+                        </a>
+                        {% if post.content_html|content_text|length >= 200 %}
+                            <p>{{ (post.content_html|content_text)[0:200] + '...' }}</p>
+                        {% else %}
+                            <p>{{ post.content_html|content_text }}</p>
+                        {% endif %}
+                        <div class="post-msg">
+                            <span>
+                                <i class="layui-icon">&#xe612;</i>
+                                <span>{{ admin.nickname }}</span>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe705;</i>
+                                <a href="{{ url_for('main.category',cate_id=post.category.id) }}">{{ post.category.name }}</a>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe68d;</i>
+                                <span>{{ post.date|strftime("%Y-%m-%d") }}</span>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe62c;</i>
+                                <span>{{ post.read_count }}</span>
+                            </span>
+                            <span>
+                                <a href="{{ url_for('main.post',post_id=post.id) }}" class="detail">阅读全文</a>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <!-- 分页导航 -->
+                {% if not posts %}
+                    <div class="post-card">
+                        <p style="margin-top: 30px;text-align: center">此处空空如也~</p>
+                    </div>
+                {% else %}
+                    {{ pager_cate(pagination,'main.category',category.id) }}
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar.html' %}
+        </div>
+    </div>
+{% endblock content %}

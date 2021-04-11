@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import pager_post,comment_board %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 面包屑导航 -->
+        <div class="map">
+            <span class="layui-breadcrumb">
+              <a href="{{ url_for('main.index') }}">首页</a>
+              <a href="{{ url_for('main.category',cate_id=post.category.id) }}">{{ post.category.name }}</a>
+              <a><cite>正文</cite></a>
+            </span>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                <div class="post-card">
+                    <div class="post-title">
+                        <a href="#">
+                            <h2>{{ post.title }}</h2>
+                        </a>
+                    </div>
+                    <div class="post-msg">
+                            <span>
+                                <i class="layui-icon">&#xe612;</i>
+                                <span>{{ admin.nickname }}</span>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe705;</i>
+                                <a href="{{ url_for('main.category',cate_id=post.category.id) }}">{{ post.category.name }}</a>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe68d;</i>
+                                <span>{{ post.date|strftime("%Y-%m-%d") }}</span>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe62c;</i>
+                                <span>{{ post.read_count }}</span>
+                            </span>
+                        </div>
+                    <div class="post-content">
+                        {{ post.content_html|safe }}
+                    </div>
+                    <div class="post-tag">
+                        <span>
+                            <i class="layui-icon">&#xe66e;</i>
+                            {% if post.tags %}
+                                {% for tag_item in post.tags %}
+                                    <a href="{{ url_for('main.tag',tag_id=tag_item.id) }}">{{ tag_item.name }}</a>
+                                {% endfor %}
+                            {% else %}
+                                <a href="javascript:;">无标签</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="message-list">
+                    <!-- 显示一页的评论列表 -->
+                    {{ comment_board(post.comments|length,comments,replies,interact_from,'main.post',post.id) }}
+                </div>
+                <!-- 分页导航 -->
+                {% if not comments %}
+                    <div class="post-card">
+                        <p style="margin-top: 30px;text-align: center">本文还没有任何评论哟~</p>
+                    </div>
+                {% else %}
+                    {{ pager_post(pagination,'main.post',post.id) }}
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar.html' %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        // 正文图片居中模块
+        var node = $('p');
+        var len = $('p').length
+        for(var i=0; i<len; i++)
+        {
+            if(node[i].childNodes[0].nodeName == 'IMG')
+                $(node[i]).css('text-align','center')
+        }
+
+        // 渲染文中表格
+        $("table").attr('class','layui-table')
+        $("li").css('list-style','unset')
+
+        // 评论模块
+        $('#comment_board #cmt_submit').on('click',function(){
+            var content = $('#cmt_content').val();
+            var author = $('#cmt_author').val();
+            var email = $('#cmt_email').val();
+            var password = $('#cmt_password').val();
+            var post_id = {{ post.id }}
+            $.post('{{ url_for('main.comment_api') }}',{post_id: post_id,content: content,author: author,
+                                                        email: email,password: password},function (res){
+                if(res.status == '0')
+                {
+                    layer.msg('发布成功')
+                    location.reload()
+                }
+                else if(res.status == '1')
+                    layer.msg('邮箱格式不正确')
+                else
+                    layer.msg('内容不能有空')
+            })
+        })
+
+        // 评论回复模块
+        $('.comment_reply').on('click',function (e){
+            var node_id = e.target.parentNode.parentNode.id
+            // 关闭其他回复框
+            $('.rp_form').remove()
+            // 创建本评论的回复框，位置紧挨当前评论
+            $('#'+node_id+' .list_msg').append('<div class="layui-form rp_form" style="margin: 5px 0">\
+                                                    <div class="layui-form-item">\
+                                                        <textarea id="rp_content" class="layui-textarea" rows="5" cols="30" placeholder="留下你的评论吧~" name="content"></textarea>\
+                                                    </div>\
+                                                    <div class="layui-form-item layui-row layui-col-space5">\
+                                                        <div class="layui-row layui-col-md4">\
+                                                            <input type="text" id="rp_author" class="layui-input" placeholder="你的名字" name="author">\
+                                                        </div>\
+                                                        <div class="layui-row layui-col-md4">\
+                                                            <input type="text" id="rp_email" class="layui-input" placeholder="你的邮箱" name="email">\
+                                                        </div>\
+                                                        <div class="layui-row layui-col-md4">\
+                                                            <input type="password" id="rp_password" class="layui-input" placeholder="口令（管理员填写）" name="password">\
+                                                        </div>\
+                                                    </div>\
+                                                    <div class="layui-inline">\
+                                                        <input type="submit" id="rp_submit" class="layui-btn layui-btn-xs layui-btn-normal" value="回复">\
+                                                        <input type="submit" id="rp_cancel" class="layui-btn layui-btn-xs layui-btn-normal" value="取消">\
+                                                    </div>\
+                                                </div>')
+            // 修改按钮大小
+            $('#rp_submit').css('height','30px')
+            $('#rp_submit').css('width','50px')
+            $('#rp_cancel').css('height','30px')
+            $('#rp_cancel').css('width','50px')
+            // 绑定提交事件
+            $('#rp_submit').on('click',function (){
+                var content = $('#rp_content').val();
+                var author = $('#rp_author').val();
+                var email = $('#rp_email').val();
+                var password = $('#rp_password').val();
+                var comment_id = node_id.slice(3)
+                $.post('{{ url_for('main.comment_reply_api') }}',
+                    {code: 0,content: content,author: author,email: email,comment_id: comment_id,password: password},function (res){
+                    // 实时回显提交的回复
+                    if(res.status == '0') {
+                        $('.rp_form').remove()
+                        location.reload()
+                    }
+                    else if(res.status == '1')
+                        layer.msg('邮箱格式不正确')
+                    else
+                        layer.msg('内容不能有空')
+                })
+            })
+            // 绑定取消事件
+            $('#rp_cancel').on('click',function (e){
+                $('.rp_form').remove()
+            })
+        })
+
+        // 回复继续回复模块
+        $('.reply_reply').on('click',function (e){
+            // 指向评论
+            var node_id = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.id
+            // 指向回复
+            var node2_id = e.target.parentNode.parentNode.id
+            // 原回复的作者
+            var origin_author = e.target.parentNode.parentNode.childNodes[1].innerText
+            // 关闭其他回复框
+            $('.rp_form').remove()
+            // 创建本评论的回复框
+            $('#'+node2_id).append('<div class="layui-form rp_form" style="margin: 5px 0">\
+                                        <div class="layui-form-item">\
+                                            <textarea id="rp_content" class="layui-textarea" rows="5" cols="30" placeholder="留下你的评论吧~" name="content"></textarea>\
+                                        </div>\
+                                        <div class="layui-form-item layui-row layui-col-space5">\
+                                            <div class="layui-row layui-col-md4">\
+                                                <input type="text" id="rp_author" class="layui-input" placeholder="你的名字" name="author">\
+                                            </div>\
+                                            <div class="layui-row layui-col-md4">\
+                                                <input type="text" id="rp_email" class="layui-input" placeholder="你的邮箱" name="email">\
+                                            </div>\
+                                            <div class="layui-row layui-col-md4">\
+                                                <input type="password" id="rp_password" class="layui-input" placeholder="口令（管理员填写）" name="password">\
+                                            </div>\
+                                        </div>\
+                                        <div class="layui-inline">\
+                                            <input type="submit" id="rp_submit" class="layui-btn layui-btn-xs layui-btn-normal" value="回复">\
+                                            <input type="submit" id="rp_cancel" class="layui-btn layui-btn-xs layui-btn-normal" value="取消">\
+                                        </div>\
+                                    </div>')
+            // 修改按钮大小
+            $('#rp_submit').css('height','30px')
+            $('#rp_submit').css('width','50px')
+            $('#rp_cancel').css('height','30px')
+            $('#rp_cancel').css('width','50px')
+            // 绑定提交事件
+            $('#rp_submit').on('click',function (){
+                var content = $('#rp_content').val();
+                var author = $('#rp_author').val();
+                var email = $('#rp_email').val();
+                var password = $('#rp_password').val();
+                // 评论id
+                var comment_id = node_id.slice(3);
+                $.post('{{ url_for('main.comment_reply_api') }}',
+                    {code: 1,content: content,author: author,email: email,comment_id: comment_id,password: password,origin_author: origin_author},function (res){
+                    // 实时回显提交的回复
+                    if(res.status == '0')
+                    {
+                        $('.rp_form').remove()
+                        location.reload()
+                    }
+                    else if(res.status == '1')
+                        layer.msg('邮箱格式不正确')
+                    else
+                        layer.msg('内容不能有空')
+                })
+            })
+            // 绑定取消事件
+            $('#rp_cancel').on('click',function (e){
+                $('.rp_form').remove()
+            })
+        })
+    </script>
+{% endblock script %}

@@ -1,0 +1,222 @@
+{% extends 'admin/base.html' %}}
+
+{% block content %}
+
+<div class="admin-content">
+    <div class="layui-container">
+        <h2>管理笔记</h2>
+        <div class="layui-layout-right" style="padding: 5px 20px">
+            <div class="layui-inline">
+                <input type="text" class="layui-input" id="searchkey" name="searchkey" placeholder="请输入关键词" style="width: 200px;height: 30px">
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn layui-btn-sm layui-btn-primary" id="searchbtn"><i class="layui-icon">&#xe615;</i></button>
+            </div>
+        </div>
+
+        <div class="manage-table">
+            <table id="notelist" lay-filter="notelist"></table>
+        </div>
+
+        <!-- 表格内嵌按钮 -->
+        <div class="optionbtn" hidden>
+            <button type="button" class="layui-btn layui-btn-xs layui-btn-normal edit_btn" style="border-radius: 3px">编辑</button>
+            <button type="button" class="layui-btn layui-btn-xs layui-btn-danger delete_btn" style="border-radius: 3px">删除</button>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+
+{{ super() }}
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+        <!-- 表格渲染 -->
+        table.render({
+            elem: '#notelist'
+            ,height: 500
+            ,url: '{{ url_for('auth.notelist_api') }}' //数据接口
+            ,loading: true
+            ,cols: [[ //表头
+            {field: 'sno', title: '序号', width:60, align: 'center'}
+            ,{field: 'nid', title: 'ID', width:80, align:'center'}
+            ,{field: 'title', title: '标题', width:300, align:'center'}
+            ,{field: 'author', title: '作者', width:100,  align:'center'}
+            ,{field: 'category', title: '分类', width:150, align:'center'}
+            ,{field: 'date', title: '时间', width: 200, align:'center'}
+            ,{field: 'option', title: '操作', width: 160, align:'center', templet: '.optionbtn'}
+            ]]
+            ,page: true //开启分页
+            ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                var result;
+                if(this.page.curr){
+                result = res.data.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+                }
+                else{
+                result=res.data.slice(0,this.limit);
+                }
+                return {
+                "code": res.code, //解析接口状态
+                "msg": res.msg, //解析提示文本
+                "count": res.count, //解析数据长度
+                "data": result //解析数据列表
+                };
+            }
+            //必须等表格渲染完成后才能绑定事件
+            ,done:function (res){
+                //为内嵌按钮绑定事件
+                $(".edit_btn").click(function(e){
+                    var nid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                    $(location).attr('href', '{{ url_for('auth.editnote',note_id=0) }}'+nid.toString());
+                })
+
+                $(".delete_btn").click(function(e) {
+                    var nid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                    layer.open({
+                        content: '确认删除？',
+                        yes: function(index, layero){
+                            $.post('{{ url_for('auth.deletenote_api') }}',{note_id: nid},function (res){
+                                if(res.status == '0')
+                                    location.reload()
+                                else
+                                    layer.msg('删除失败，笔记不存在')
+                            })
+                            layer.close(index);
+                        }
+                    });
+                })
+            }//end of done
+        });//end of table.render
+
+        //搜索功能
+        $("#searchbtn").on('click',function(){
+            var key = $("#searchkey").val()
+            $.post('{{ url_for('auth.admin_search_note_api') }}',{key: key},function(res){
+                table.render({
+                    elem: '#notelist'
+                    ,height: 500
+                    ,data: res.data
+                    ,loading: true
+                    ,cols: [[ //表头
+                    {field: 'sno', title: '序号', width:60, align: 'center'}
+                    ,{field: 'nid', title: 'ID', width:80, align:'center'}
+                    ,{field: 'title', title: '标题', width:300, align:'center'}
+                    ,{field: 'author', title: '作者', width:100,  align:'center'}
+                    ,{field: 'category', title: '分类', width:150, align:'center'}
+                    ,{field: 'date', title: '时间', width: 200, align:'center'}
+                    ,{field: 'option', title: '操作', width: 160, align:'center', templet: '.optionbtn'}
+                    ]]
+                    ,page: true //开启分页
+                    ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                        var result;
+                        if(this.page.curr){
+                        result = res.data.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+                        }
+                        else{
+                        result=res.data.slice(0,this.limit);
+                        }
+                        return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": result //解析数据列表
+                        };
+                    }
+                    //必须等表格渲染完成后才能绑定事件
+                    ,done:function (res){
+                        //为内嵌按钮绑定事件
+                        $(".edit_btn").click(function(e){
+                            var nid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                            $(location).attr('href', '{{ url_for('auth.editnote',note_id=0) }}'+nid.toString());
+                        })
+
+                        $(".delete_btn").click(function(e) {
+                            var nid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                            layer.open({
+                                content: '确认删除？',
+                                yes: function(index, layero){
+                                    $.post('{{ url_for('auth.deletenote_api') }}',{note_id: nid},function (res){
+                                        if(res.status == '0')
+                                            location.reload()
+                                        else
+                                            layer.msg('删除失败，笔记不存在')
+                                    })
+                                    layer.close(index);
+                                }
+                            });
+                        })
+                    }//end of done
+                });//end of table.render
+            })
+        })
+        // 回车触发
+        $("#searchkey").bind('keyup',function(e){
+            if(e.keyCode == '13')
+            {
+                var key = $("#searchkey").val()
+                $.post('{{ url_for('auth.admin_search_note_api') }}',{key: key},function(res){
+                    table.render({
+                        elem: '#notelist'
+                        ,height: 500
+                        ,data: res.data
+                        ,loading: true
+                        ,cols: [[ //表头
+                        {field: 'sno', title: '序号', width:60, align: 'center'}
+                        ,{field: 'nid', title: 'ID', width:80, align:'center'}
+                        ,{field: 'title', title: '标题', width:300, align:'center'}
+                        ,{field: 'author', title: '作者', width:100,  align:'center'}
+                        ,{field: 'category', title: '分类', width:150, align:'center'}
+                        ,{field: 'date', title: '时间', width: 200, align:'center'}
+                        ,{field: 'option', title: '操作', width: 160, align:'center', templet: '.optionbtn'}
+                        ]]
+                        ,page: true //开启分页
+                        ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                            var result;
+                            if(this.page.curr){
+                            result = res.data.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+                            }
+                            else{
+                            result=res.data.slice(0,this.limit);
+                            }
+                            return {
+                            "code": res.code, //解析接口状态
+                            "msg": res.msg, //解析提示文本
+                            "count": res.count, //解析数据长度
+                            "data": result //解析数据列表
+                            };
+                        }
+                        //必须等表格渲染完成后才能绑定事件
+                        ,done:function (res){
+                            //为内嵌按钮绑定事件
+                            $(".edit_btn").click(function(e){
+                                var nid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                                $(location).attr('href', '{{ url_for('auth.editnote',note_id=0) }}'+nid.toString());
+                            })
+
+                            $(".delete_btn").click(function(e) {
+                                var nid = e.target.parentNode.parentNode.parentNode.childNodes[1].childNodes[0].innerText
+                                layer.open({
+                                    content: '确认删除？',
+                                    yes: function(index, layero){
+                                        $.post('{{ url_for('auth.deletenote_api') }}',{note_id: nid},function (res){
+                                            if(res.status == '0')
+                                                location.reload()
+                                            else
+                                                layer.msg('删除失败，笔记不存在')
+                                        })
+                                        layer.close(index);
+                                    }
+                                });
+                            })
+                        }//end of done
+                    });//end of table.render
+                })
+            }
+        })
+    });//end of layui.use
+</script>
+
+{% endblock script %}

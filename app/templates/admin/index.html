@@ -1,0 +1,25 @@
+{% extends 'admin/base.html' %}}
+
+{% block content %}
+
+    <div class="admin-content">
+        <div class="layui-container">
+            <h2>当前共有{{ info["post_num"] }}篇文章，{{ info["note_num"] }}条笔记，
+                {{ info["category_num"] }}个分类，{{ info["tag_num"] }}个文章标签，
+                {{ info["comment_num"] }}条评论，{{ info["message_num"] }}条留言，加油吧~</h2>
+            <div class="admin-index-card">
+                <h3><a href="{{ url_for('auth.writepost') }}">撰写文章</a> <a href="{{ url_for('auth.writenote') }}" style="color: #f67730">撰写笔记</a></h3>
+                <h3><a href="{{ url_for('auth.posts') }}">编辑文章</a> <a href="{{ url_for('auth.notes') }}" style="color: #f67730">编辑笔记</a></h3>
+            </div>
+            <div class="admin-index-card">
+                <h3>最近发布的文章</h3>
+                <ul>
+                    {% for post in posts %}
+                        <li><span>{{ post.date|strftime("%Y-%m-%d") }}</span>&nbsp;<a href="{{ url_for('main.post',post_id=post.id) }}">{{ post.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

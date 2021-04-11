@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 面包屑导航 -->
+        <div class="map">
+            <span class="layui-breadcrumb">
+              <a href="{{ url_for('main.index') }}">首页</a>
+              <a><cite>归档</cite></a>
+            </span>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                {% if not arch_list.items() %}
+                    <div class="post-card">
+                        <p style="margin-top: 30px;text-align: center">一片文章也没有呢~</p>
+                    </div>
+                {% else %}
+                    <div class="archive-list">
+                    {% for key,value in arch_list.items() %}
+                        <div>
+                            <p><a>{{ key }}</a></p>
+                            <ul>
+                                {% for val in value %}
+                                    <li><i class="layui-icon">&#xe60a;</i>&nbsp<a href="{{ url_for('main.post',post_id=val.id) }}">{{ val.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar.html' %}
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,286 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+<div class="admin-content">
+    <div class="admin-title-wide">
+        <h2 style="display: inline-block">撰写笔记</h2>
+        <span>（您正在编辑：{{ note.title }}）</span>
+    </div>
+    <form class="layui-form" method="post" action="{{ url_for('auth.editnote',note_id=note.id) }}">
+        {{ form.csrf_token }}
+        {{ form.tags(style="display: none",id="post_tag") }}
+        <div class="layui-row">
+            <div class="layui-row layui-col-md10 admin-post-left">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline admin-post-title">
+                        {{ form.title(class="layui-input",placeholder="标题",autocomplete="on") }}
+                    </div>
+                    <label class="layui-form-label">分类：</label>
+                    <div class="layui-input-inline">
+                        {{ form.category }}
+                    </div>
+                </div>
+                <div class="layui-form-item" id="post-editormd">
+                    {{ form.content_md }}
+                </div>
+                <div class="layui-form-item" style="text-align: right">
+                    {{ form.submit(class="layui-btn layui-btn-normal") }}
+                </div>
+            </div>
+            <div class="layui-row layui-col-md2 admin-post-right">
+                <div class="layui-form-item admin-post-option">
+                    <p>选项和附件</p>
+                </div>
+
+                <div class="admin-post-elem">
+                    <div class="admin-post-elem-tag" id="all_tags">
+                        <p style="padding: 5px 0;margin: 5px 0">剩余标签</p>
+                        {% for tag in tags %}
+                            {% if tag in note.tags %}
+                                <a class="layui-btn layui-btn-xs layui-btn-primary"  id="tag{{ tag.id }}" href="javascript:;"  style="color: {{ tag.color }};display: none">{{ tag.name }}</a>
+                            {% else %}
+                                <a class="layui-btn layui-btn-xs layui-btn-primary"  id="tag{{ tag.id }}" href="javascript:;"  style="color: {{ tag.color }}">{{ tag.name }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="admin-post-elem-tag" id="selected_tags">
+                        <p style="padding: 5px 0;margin: 5px 0">已选标签</p>
+                        {% for tag in note.tags %}
+                            <a class="layui-btn layui-btn-xs layui-btn-primary" id="stag{{ tag.id }}"href="javascript:;"  style="color: #2D93CA">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+
+                    <div class="admin-post-elem-add">
+                        <button type="button" class="layui-btn layui-btn-primary" id="add_tag">
+                            <i class="layui-icon">&#xe608;</i>增加标签
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-post-elem">
+                    <div class="admin-post-elem-add">
+                        <button type="button" class="layui-btn layui-btn-primary" id="upload">
+                            <i class="layui-icon">&#xe681;</i>上传图片
+                        </button>
+                    </div>
+                    <div class="admin-post-elem-item">
+                        <ul class="pic-list" id="pic-list">
+                        {% if attachments %}
+                            {% for attachment in attachments %}
+                                <li>
+                                    <p id="filename" data-url="{{ attachment.url }}" data-local="{{ attachment.local }}" data-filename="{{ attachment.filename }}"><a href="javascript:;">{{ attachment.filename }}</a></p>
+                                    <p id="fileoption"><span>{{ attachment.filesize }}</span><a href="javascript:;"><i class="layui-icon" id="{{ attachment.securename }}">&#x1006;</i></a></p>
+                                    <hr>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
+
+
+{% block script %}
+
+{{ super() }}
+<script>
+    var testEditor;
+
+    $(function () {
+        testEditor = editormd("post-editormd", {
+            width: "100%",
+            height: 540,
+            syncScrolling: "single",
+            path: "{{ url_for('static',filename='editormd/lib/') }}"
+        });
+    });
+
+    layui.use('upload', function(){
+        var upload = layui.upload; //得到 upload 对象
+        //创建一个上传组件
+        var uploadInst = upload.render({
+            elem: '#upload' //绑定元素
+            ,url: '{{ url_for('auth.upload') }}' //上传接口
+            ,data: {id: {{ note.id }},code: 1}
+            ,accept: 'image' //图片
+            ,done: function(res){
+              //上传完毕回调
+                $("#pic-list").append('<li>\
+                            <p id="filename"><a href="javascript:;">' + res.data.filename + '</a></p>\
+                            <p id="fileoption"><span>' + res.data.size + '</span><a href="javascript:;"><i class="layui-icon" id="' + res.data.securename + '">&#x1006;</i></a></p>\
+                            <hr>\
+                            </li>')
+
+                $('#pic-list #filename').on('click',function (e){
+                    var link = '![' + res.data.filename + '](' + '{{ url_for('static',filename='uploads') }}' + res.data.src + ')';
+                    testEditor.replaceSelection(link)
+                })
+
+                $('#pic-list i').on('click',function (e){
+                    e.target.parentNode.parentNode.parentNode.remove()
+                    $.post('{{ url_for('auth.remove_file') }}',{securename: e.target.id},function(res){
+                        console.log(res)
+                    })
+                })
+            }
+            ,error: function(){
+              //请求异常回调
+            }
+          });
+        });
+
+    var tags = [] //最终提交标签的来源（原有的 + 修改时新增）
+
+    // 动态选择标签
+    $('#all_tags a').on('click',function (e){
+        tag_id = e.target.id
+        $('#selected_tags').append('<a class="layui-btn layui-btn-xs layui-btn-primary" id="' + 's' + tag_id + '"href="javascript:;"  style="color: #2D93CA">'+ $('#'+tag_id).text() +'</a>')
+        $('#'+tag_id).hide()
+        tags.push(tag_id.slice(3))
+        $('#post_tag').val(tags.join())
+
+        $('#selected_tags a').on('click',function (e){
+            tag_id = e.target.id
+            $('#'+tag_id.slice(1)).show()
+            $('#'+tag_id).remove()
+            for(var i in tags)
+            {
+                if(tags[i] == tag_id.slice(4))
+                    tags.splice(i,1)
+            }
+            $('#post_tag').val(tags.join())
+        })
+    })
+
+    // 恢复之前选择的附件
+    $(document).ready(function (){
+        // 恢复之前选择的附件
+        $('#pic-list #filename').on('click',function (e){
+            var filename = e.currentTarget.dataset['filename']
+            var url = e.currentTarget.dataset['url']
+            var link = '![' + filename + '](' + url + ')';
+            testEditor.replaceSelection(link)
+        })
+
+        $('#pic-list i').on('click',function (e){
+            e.target.parentNode.parentNode.parentNode.remove()
+            $.post('{{ url_for('auth.remove_file') }}',{securename: e.target.id},function(res){
+                console.log(res)
+            })
+        })
+
+        // 恢复之前选择的标签
+        {% for tag in note.tags %}
+            tags.push({{ tag.id }})
+            $('#post_tag').val(tags.join())
+        {% endfor %}
+    })
+
+    //新增标签按钮绑定事件
+    $("#add_tag").click(function(e) {
+        var content = '<span style="display: inline-block;padding: 10px;margin-top:10px">名称：</span><div class="layui-inline"><input type="text" class="layui-input" id="tag_edit" style="padding: 10px" name="tag_name" value=""></div>'
+        layer.open({
+            type: 1,
+            title: '新增标签',
+            area: '260px',
+            content: content,
+            btn: ['确定'],
+            success: function(layero, index){
+                $("#tag_edit").focus().select();
+                $("#tag_edit").bind('keyup',function(e){
+                    if(e.keyCode == '13')
+                    {
+                        tag_name = $('#tag_edit').val()
+                        if(tag_name != '')
+                        {
+                            $.post('{{ url_for('auth.newtag_api') }}',{tag_name: tag_name},function(res){
+                            if(res.status == '0')
+                            {
+                                //location.reload()
+                                $('#all_tags').append('<a class="layui-btn layui-btn-xs layui-btn-primary"  id="tag'+ res.id +'" href="javascript:;"  style="color: '+ res.color +';border: 1px solid '+ res.color +'">'+ res.name +'</a>')
+                                //为新增的tag绑定点击选取事件
+                                $('#all_tags #tag'+res.id).on('click',function (e){
+                                    tag_id = e.target.id
+
+                                    $('#selected_tags').append('<a class="layui-btn layui-btn-xs layui-btn-primary" id="' + 's' + tag_id + '"href="javascript:;"  style="color: #2D93CA">'+ $('#'+tag_id).text() +'</a>')
+                                    $('#'+tag_id).hide()
+                                    tags.push(tag_id.slice(3))
+                                    $('#post_tag').val(tags.join())
+
+                                    $('#selected_tags a').on('click',function (e){
+                                        tag_id = e.target.id
+                                        $('#'+tag_id.slice(1)).show()
+                                        $('#'+tag_id).remove()
+                                        for(var i in tags)
+                                        {
+                                            if(tags[i] == tag_id.slice(4))
+                                                tags.splice(i,1)
+                                        }
+                                        $('#post_tag').val(tags.join())
+                                    })
+                                })
+                            }
+                            else
+                                layer.msg('标签已存在')
+                        });
+                        }
+                        else
+                            layer.msg('内容不能为空')
+                        layer.close(index);
+                    }
+                })
+            },
+            yes: function(index, layero){
+                tag_name = $('#tag_edit').val()
+                if(tag_name != '')
+                {
+                    $.post('{{ url_for('auth.newtag_api') }}',{tag_name: tag_name},function(res){
+                    if(res.status == '0')
+                    {
+                        //location.reload()
+                        $('#all_tags').append('<a class="layui-btn layui-btn-xs layui-btn-primary"  id="tag'+ res.id +'" href="javascript:;"  style="color: '+ res.color +';border: 1px solid '+ res.color +'">'+ res.name +'</a>')
+                        //为新增的tag绑定点击选取事件
+                        $('#all_tags #tag'+res.id).on('click',function (e){
+                            tag_id = e.target.id
+
+                            $('#selected_tags').append('<a class="layui-btn layui-btn-xs layui-btn-primary" id="' + 's' + tag_id + '"href="javascript:;"  style="color: #2D93CA">'+ $('#'+tag_id).text() +'</a>')
+                            $('#'+tag_id).hide()
+                            tags.push(tag_id.slice(3))
+                            $('#post_tag').val(tags.join())
+
+                            $('#selected_tags a').on('click',function (e){
+                                tag_id = e.target.id
+                                $('#'+tag_id.slice(1)).show()
+                                $('#'+tag_id).remove()
+                                for(var i in tags)
+                                {
+                                    if(tags[i] == tag_id.slice(4))
+                                        tags.splice(i,1)
+                                }
+                                $('#post_tag').val(tags.join())
+                            })
+                        })
+                    }
+                    else
+                        layer.msg('标签已存在')
+                });
+                }
+                else
+                    layer.msg('内容不能为空')
+                layer.close(index);
+            },
+            cancel: function(){
+            }
+        });//end of layer.open
+    });//end of click
+
+</script>
+
+{% endblock script %}

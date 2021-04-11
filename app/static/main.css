@@ -1,0 +1,755 @@
+/*body样式*/
+body {
+    background: #f8f8f8;
+    font-family: "Microsoft YaHei","微软雅黑","Courier New","Hiragino Sans GB","Helvetica Neue","Arial",sans-serif;
+    font-size: 14px;
+    color: #4e4e4e;
+    -webkit-font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+    line-height: 1.6
+}
+
+/*-------------------------------------------------- header样式 --------------------------------------------------*/
+/*header框式*/
+.header {
+    width: 100%;
+    height: 60px;
+    position: relative;
+    background-color: #227eaa;
+    z-index: 1000;
+}
+
+/*header区域字体颜色*/
+.header * {
+    color: #FFF !important;
+}
+
+/*博客标题区域样式*/
+.header .logopic {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    vertical-align: super;
+}
+
+.header .logopic img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.header .logo {
+    display: inline-block;
+    padding: 15px 10px;
+}
+
+/*清除导航原背景颜色*/
+.header .layui-nav{
+    background: none;
+}
+
+/*手机端下拉菜单颜色*/
+.header ul dl a {
+    color: #227eaa !important;
+}
+
+/*清除导航项选中后的绿条标记*/
+.header .layui-nav .layui-this:after {
+    content: none;
+}
+
+/*导航项鼠标悬停颜色*/
+.header .layui-nav .layui-nav-item a:hover {
+    color: #12caea !important;
+}
+
+/*-------------------------------------------------- content样式 --------------------------------------------------*/
+/*content样式*/
+.post-card {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*文章标题颜色*/
+.post-card h2 {
+    color: #227eaa;
+    padding: 10px 0;
+    font-weight: 550;
+    word-break: break-all;
+}
+
+/*阅读全文链接颜色*/
+.post-card .detail {
+    color: #227eaa;
+}
+
+/*sidebar样式*/
+.phone-search {
+    padding-top: 10px;
+    margin: 0px !important;
+}
+
+/*手机端搜索框宽度*/
+.phone-search .input {
+    width: 85%;
+}
+
+/*手机端搜索框高度*/
+.phone-search .layui-input {
+    height: 30px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*搜索框样式*/
+.side-search {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    min-height:40px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*搜索输入框大小*/
+.side-search .layui-input {
+    width: 180px;
+    height: 30px;
+}
+
+/*侧边栏头像区样式*/
+.side-avata {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 5px;
+    margin-top: 15px;
+    border-radius: 5px;
+    border-radius: 5px;
+    min-height: 100px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*侧边栏背景图片框样式*/
+.side-avata-bg {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+/*侧边栏背景图片样式*/
+.side-avata-bg  img{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 150px;
+}
+
+/*侧边栏头像图片框样式*/
+.side-avata span {
+    display: inline-block;
+    position: absolute;
+    bottom: 80px;
+    left: 34%;
+}
+
+/*侧边栏头像图片样式*/
+.side-avata span img {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.4);
+    /*animation: rotate 1s linear;*/
+}
+/*动画起始*/
+@keyframes rotate{
+	0%{
+		transform: rotateZ(0deg);/*从0度开始*/
+	}
+	100%{
+		transform: rotateZ(360deg);/*360度结束*/
+	}
+}
+
+/*侧边栏用户名样式*/
+.side-avata .nickname {
+    margin-top: 50px;
+    text-align: center;
+    font-weight: 550;
+    color: #666;
+}
+
+/*侧边栏站点链接样式*/
+.side-avata .link {
+    text-align: center;
+}
+
+.side-avata .link a {
+    display: inline-block;
+    margin: 10px 20px;
+    font-weight: 550;
+    color: #666;
+}
+
+/*其他侧边栏模块（分类，最近，标签）标题*/
+.side-title {
+    border-bottom: 1px solid #eee;
+    width: 100%;
+    color: #666;
+    font-weight: 600;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+/*文章分类*/
+.side-categorys {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+.side-categorys ul {
+    overflow: hidden;
+}
+
+.side-categorys ul li {
+    padding: 5px 0;
+}
+
+.side-categorys ul span {
+    float: right;
+}
+
+/*最新文章*/
+.side-newposts {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+.side-newposts a {
+    word-break: break-all;
+}
+
+/*文章标签*/
+.side-tags {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+.side-tags div a {
+    margin: 0 0 5px 0 !important;
+    white-space: nowrap; /*文本不换行*/
+    text-overflow: ellipsis;
+    overflow: hidden
+}
+
+/*-------------------------------------------------- footer样式 --------------------------------------------------*/
+/*footer样式*/
+.footer {
+    width: 100%;
+    height: 50px;
+    float: left;
+    background-color: #227eaa;
+}
+
+.footer p {
+    box-sizing: border-box;
+    padding: 15px;
+    color: #FFF;
+    text-align: center;
+}
+
+.return-top {
+    position: fixed;
+    right: 30px;
+    bottom: 60px;
+    z-index: 99999;
+}
+
+.return-top i {
+    font-size: 40px;
+    font-weight: 550;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*-------------------------------------------------- 子页面样式 --------------------------------------------------*/
+/*面包屑导航*/
+.map {
+    margin-top: 10px;
+    padding: 0 5px;
+}
+
+/*正文页标题*/
+.post-title {
+    padding: 10px 5px;
+    font-weight: 550;
+}
+
+/*正文页文章描述信息*/
+.post-msg {
+    padding: 10px 5px;
+}
+
+.post-msg > span {
+    padding-right: 10px;
+}
+
+.post-msg span:nth-child(2) a {
+    color: #227eaa !important;
+}
+
+.post-msg i {
+    color: #8D8D8D;
+}
+
+/*正文页文章正文部分*/
+.post-content {
+    padding: 10px 5px;
+    /*text-align: justify;*/
+}
+
+/*恢复默认ul,ol样式（layui默认将该样式清除了）*/
+.post-content ul, .post-content ol {
+    display: block;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+/*显示li小圆点（layui默认将该样式清除了）*/
+.post-content li {
+    list-style: unset;
+}
+
+/*正文页文章正文图片样式*/
+.post-content img{
+    max-width: 100%;
+    max-height: 100%;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+/*正文页文章正文各级标题样式*/
+.post-content h1,.post-content h2,.post-content h3 {
+    color: #227eaa;
+    font-weight: 550;
+    word-break: break-all;
+}
+
+.post-content h4,.post-content h5,.post-content h6 {
+    line-height: 2em;
+    color: #16a763;
+    font-weight: 550;
+}
+
+.post-content p {
+    line-height: 1.6em;
+}
+
+.post-content a {
+    color: #227eaa;
+}
+
+/*正文底部标签样式*/
+.post-tag {
+    padding: 10px 5px 0 5px;
+}
+.post-tag a {
+    color: #227eaa !important;
+}
+
+
+/*归档页*/
+.archive-list {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+.archive-list p a {
+    margin: 10px 5px;
+    font-weight: 550;
+    font-size: 16px;
+}
+
+.archive-list li {
+    margin: 5px 25px;
+}
+
+.archive-list li a{
+    color: #227eaa;
+}
+
+/*笔记页*/
+.note-card {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*笔记中的图片格式*/
+.note-card img{
+    max-width: 100%;
+    max-height: 100%;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+/*笔记标题颜色*/
+.note-card h2 {
+    color: #227eaa;
+    padding: 5px 0;
+    font-weight: 550;
+    word-break: break-all;
+}
+
+/*笔记正文样式*/
+.note-content {
+    /*padding: 10px 5px;*/
+    /*text-align: justify;*/
+}
+
+/*恢复默认ul,ol样式（layui默认将该样式清除了）*/
+.note-content ul, .note-content ol {
+    display: block;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+/*显示li小圆点（layui默认将该样式清除了）*/
+.note-content li {
+    list-style: unset;
+}
+
+.note-content a {
+    color: #227eaa;
+}
+
+/*笔记描述信息样式*/
+.note-msg {
+    padding: 10px 5px;
+}
+
+.note-msg > span {
+    padding-right: 10px;
+}
+
+/*留言页*/
+.message-list {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*留言页标题样式*/
+.message-list .message-title {
+    text-align: center;
+}
+
+/*留言内容样式*/
+.message-list .message-content {
+    padding: 10px 5px;
+}
+
+.message-list .message-content h3,.message-list .message-content h4 {
+    margin: 20px 0;
+}
+
+/*留言列表底部间距*/
+.message-list .message-item li {
+    margin-bottom: 20px;
+}
+
+/*关于页*/
+.about-card {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/*关于页标题样式*/
+.about-card .about-title {
+    text-align: center;
+}
+
+/*关于页内容样式*/
+.about-card .about-content {
+    padding: 10px 5px;
+}
+
+
+/*-------------------------------------------------- 后台样式 --------------------------------------------------*/
+/*登录页样式*/
+
+/*后台header样式*/
+.admin-header {
+    width: 100%;
+    position: relative;
+}
+
+/*后台header导航样式*/
+.admin-header .layui-nav {
+    background-color: #3F3F3F;
+}
+
+.admin-header .layui-nav-item {
+    margin: 0 10px;
+    line-height: 40px;
+}
+
+.admin-header .layui-nav .layui-nav-child {
+    top: 40px;
+}
+
+.admin-header .admin-nav-right {
+    float: right;
+}
+
+.admin-header .admin-nav-right a {
+    padding: 0;
+}
+
+/*后台content样式*/
+.admin-content {
+    margin: 15px 0;
+    min-height: 620px;
+}
+
+/*文章笔记撰写修改页为宽页*/
+.admin-content .admin-title-wide {
+    margin: 0 0 10px 20px;
+}
+
+/*后台content左侧区域样式*/
+/*恢复默认ul,ol样式（layui默认将该样式清除了）*/
+.post-content ul, .post-content ol {
+    display: block;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+/*显示markdown预览li小圆点（layui默认将该样式清除了）*/
+.admin-content .admin-post-left li {
+    list-style: unset;
+}
+
+.admin-content .admin-post-left {
+    padding: 0 20px;
+    position: relative;
+}
+
+.admin-content .admin-post-left .admin-post-title{
+    width: 70%;
+    font-size: 16px;
+    font-weight: 550;
+}
+
+.admin-content .admin-post-left label {
+    font-weight: 550;
+}
+
+/*后台content右侧区域样式*/
+.admin-content .admin-post-right {
+    padding: 0 20px 0 0;
+}
+
+.admin-content .admin-post-right .admin-post-option {
+    padding: 9px 15px;
+    text-align: center;
+    font-weight: 550;
+}
+
+/*后台content右侧区域模块样式*/
+.admin-content .admin-post-right .admin-post-elem {
+    min-height: 30px;
+    background-color: #FFFFFF;
+    margin: 15px 0;
+    padding-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+.admin-content .admin-post-right .admin-post-elem .admin-post-elem-item {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.admin-content .admin-post-right .admin-post-elem label {
+    width: 50px;
+    padding: 9px 5px;
+}
+
+
+.admin-content .admin-post-right .admin-post-elem .layui-input-inline {
+    width: 160px;
+}
+
+.admin-content .admin-post-right .admin-post-elem .admin-post-elem-add {
+    padding: 0 10px 10px 10px;
+    text-align: center;
+}
+
+/*后台content右侧模块之标签区域样式*/
+.admin-content .admin-post-right .admin-post-elem .admin-post-elem-tag {
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+
+.admin-content .admin-post-right .admin-post-elem .admin-post-elem-tag p {
+    font-weight: 550;
+}
+
+.admin-content .admin-post-right .admin-post-elem .admin-post-elem-tag a {
+    margin: 3px;
+}
+
+/*后台content右侧模块之附件（图片）区域样式*/
+.admin-content .admin-post-right .admin-post-elem .pic-list i {
+    padding-left: 20px;
+}
+
+.admin-content .admin-post-right .admin-post-elem li {
+    padding: 0 20px;
+}
+
+.admin-content .admin-post-right .admin-post-elem li #filename a {
+    color: #2D93CA;
+}
+
+.admin-content .admin-post-right .admin-post-elem li #filename a:hover {
+    color: #0000FF;
+}
+
+.admin-content .admin-post-right .admin-post-elem li #fileoption i {
+    color: #ff0000;
+    font-weight: 600;
+}
+
+/*后台footer样式*/
+.admin-footer {
+    width: 100%;
+    height: 40px;
+    float: left;
+    background-color: #3F3F3F;
+}
+
+.admin-footer p {
+    text-align: center;
+    color: rgba(255,255,255,.7);
+    padding: 10px 0;
+}
+
+/*-------------------------------------------------- 后台子页面样式 --------------------------------------------------*/
+/*index页样式*/
+.admin-index-card {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+.admin-index-card h2 {
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+.admin-index-card h3 {
+    margin: 10px 0;
+    font-weight: 600;
+}
+
+.admin-index-card a {
+    display: inline-block;
+    padding: 3px 20px;
+    color: #227eaa;
+}
+
+/*setting页面样式*/
+.admin-setting-card {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 20px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    min-height: 100px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+.admin-setting-card .layui-input {
+    width: 300px;
+}
+
+.admin-setting-card .layui-textarea {
+    width: 300px;
+}
+
+.admin-setting-card .layui-btn {
+    margin-left: 180px;
+}
+
+.admin-setting-card .admin-avata-upload {
+    width: 100px;
+    height: 100px;
+}
+
+.admin-setting-card .admin-avata {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+/*各管理页面阴影样式*/
+.manage-table {
+    margin-top: 10px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+
+

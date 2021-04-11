@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import pager %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 隐藏的搜索框，手机端显示 -->
+        <div class="phone-search layui-show-xs-block layui-hide-sm">
+            <form class="layui-form" method="post" action="{{ url_for('main.search_note') }}">
+                {{ form.csrf_token}}
+                <div class="layui-inline input">
+                    {{ form.keyword(class="layui-input",placeholder="请输入关键词") }}
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </form>
+        </div>
+        <!-- 面包屑导航 -->
+        <div class="map">
+            <span class="layui-breadcrumb">
+              <a href="{{ url_for('main.index') }}">首页</a>
+              <a><cite>笔记</cite></a>
+            </span>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                {% for note in notes %}
+                    <div class="note-card">
+                        <a href="javascript:;">
+                            <h2>{{ note.title }}</h2>
+                        </a>
+                        <div class="note-content">
+                            {{ note.content_html|safe }}
+                        </div>
+                        <div class="note-msg">
+                            <span>
+                                <i class="layui-icon">&#xe705;</i>
+                                <a href="{{ url_for('main.category_note',cate_id=note.category.id) }}">{{ note.category.name }}</a>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe68d;</i>
+                                <span>{{ note.date|strftime("%Y-%m-%d") }}</span>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <!-- 分页导航 -->
+                {% if not notes %}
+                    <div class="post-card">
+                        <p style="margin-top: 30px;text-align: center">此处空空如也~</p>
+                    </div>
+                {% else %}
+                    {{ pager(pagination,'main.note') }}
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar_note.html' %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        // 正文图片居中
+        var node = $('p');
+        var len = $('p').length
+        for(var i=0; i<len; i++)
+        {
+            if(node[i].childNodes[0].nodeName == 'IMG')
+                $(node[i]).css('text-align','center')
+        }
+
+        // 渲染文中表格
+        $("table").attr('class','layui-table')
+    </script>
+{% endblock script %}

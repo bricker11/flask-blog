@@ -1,0 +1,76 @@
+{% extends 'admin/base.html' %}}
+
+{% block content %}
+
+    <div class="admin-content">
+        <div class="layui-container">
+            <h2>系统设置</h2>
+            <div class="layui-row admin-setting-card">
+                <div class="layui-row layui-col-md6">
+                    <form class="layui-form" method="post">
+                        {{ form.csrf_token }}
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">博客标题</label>
+                            <div class="layui-inline">
+                                {{ form.title(class="layui-input") }}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">博客副标</label>
+                            <div class="layui-inline">
+                                {{ form.subtitle(class="layui-input") }}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户昵称</label>
+                            <div class="layui-inline">
+                                {{ form.nickname(class="layui-input") }}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关于作者</label>
+                            <div class="layui-inline">
+                                {{ form.about(class="layui-textarea") }}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            {{ form.submit(class="layui-btn layui-btn-normal") }}
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-row layui-col-md6">
+                    <div class="admin-avata-upload">
+                        <img class="admin-avata" src="{{ url_for('static',filename='img/avata.jpg')+'?'+rnd }}">
+                    </div>
+                    <button type="button" class="layui-btn layui-btn-primary" id="upload" style="margin:10px 2px">更换头像</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        layui.use('upload', function(){
+            var upload = layui.upload; //得到 upload 对象
+            //创建一个上传组件
+            var uploadInst = upload.render({
+                elem: '#upload' //绑定元素
+                ,url: '{{ url_for('auth.upload_avata') }}' //上传接口
+                ,accept: 'image' //图片
+                ,done: function(res){
+                    //上传完毕回调
+                    if(res.status == '0')
+                        location.reload()
+                    else
+                        layer.msg('修改失败，请重试')
+                }
+                ,error: function(){
+                  //请求异常回调
+                }
+            });
+        });
+    </script>
+{% endblock script %}

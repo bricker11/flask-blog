@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% block head %}
+    {% block title %}
+        <title>{{ admin.title }}</title>
+    {% endblock title %}
+
+    {% block metas %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% endblock metas %}
+
+    {% block styles %}
+        <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+        <script type="text/javascript" src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='layui/layui.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='highlight/highlight.pack.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='highlight/highlightjs-line-numbers.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='layui/css/layui.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='highlight/styles/atom-one-dark.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    {% endblock styles %}
+{% endblock head %}
+</head>
+<body>
+<!-- 总体布局分为三部分：头部，内容，底部, base.html包含头部和底部 -->
+{% block body %}
+    {% block header %}
+        <header class="header">
+            <div class="layui-container">
+                <!-- 博客标题 -->
+                <div class="logopic">
+                    <a href="{{ url_for('main.index') }}">
+                        <img src="{{ url_for('static',filename='img/logo.png') }}">
+                    </a>
+                </div>
+                <a class="logo" href="{{ url_for('main.index') }}">
+                    <h2>{{ admin.title }}</h2>
+                </a>
+                <span>{{ admin.subtitle }}</span>
+                <!-- 导航菜单 -->
+                <ul class="layui-nav layui-layout-right">
+                    <li class="layui-nav-item layui-hide-xs">
+                        <a href="{{ url_for('main.index') }}">首页</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs">
+                        <a href="{{ url_for('main.archive') }}">归档</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs">
+                        <a href="{{ url_for('main.note') }}">笔记</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs">
+                        <a href="{{ url_for('main.message') }}">留言</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs">
+                        <a href="{{ url_for('main.about') }}">关于</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-sm">
+                        <a href="javascript:;">
+                            <i class="layui-icon" style="font-size: 20px;">&#xe653;</i>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="{{ url_for('main.index') }}">首页</a></dd>
+                            <dd><a href="{{ url_for('main.archive') }}">归档</a></dd>
+                            <dd><a href="{{ url_for('main.note') }}">笔记</a></dd>
+                            <dd><a href="{{ url_for('main.message') }}">留言</a></dd>
+                            <dd><a href="{{ url_for('main.about') }}">关于</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </header>
+    {% endblock header %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% block footer %}
+        <footer class="footer">
+            <p>Copyright © {{ datetime|strftime("%Y") }} {{ admin.title }} 版权所有</p>
+        </footer>
+        <div class="return-top">
+            <a href="javascript:;"><i class="layui-icon layui-hide-xs">&#xe604;</i></a>
+        </div>
+    {% endblock footer %}
+
+    {% block script %}
+        <!-- 注册layui模块-->
+        <script>
+            layui.use(['element','layer'], function(){
+                var element = layui.element;
+                var layer = layui.layer;
+                {% for message in get_flashed_messages() %}
+                    layer.msg('{{ message }}');
+                {% endfor %}
+            });
+        </script>
+        <!-- 返回顶部动作 -->
+        <script>
+            $(".return-top").on('click',function(){
+                $("html,body").animate({ scrollTop: $(".header").offset().top }, 500);
+            })
+        </script>
+        <!-- 加载代码高亮插件 -->
+        <script>
+            hljs.highlightAll();
+            hljs.initLineNumbersOnLoad();
+        </script>
+    {% endblock script %}
+{% endblock body %}
+</body>
+</html>

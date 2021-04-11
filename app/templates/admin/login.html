@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+        <title>{% block title %}博客后台{% endblock title %}</title>
+
+        {% block metas %}
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% endblock metas %}
+
+        {% block styles %}
+        <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+        <script type="text/javascript" src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='layui/layui.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='layui/css/layui.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+        {% endblock styles %}
+    {% endblock head %}
+</head>
+<body>
+
+    <div style="text-align: center">
+        <h1 style="text-align: center;margin: 180px 0 20px 0">博客后台</h1>
+        <form class="layui-form" method="post" style="margin: 0;width: 240px;display: inline-block">
+            {{ form.csrf_token }}
+            <div class="layui-form-item">
+                {{ form.username(class="layui-input",placeholder="用户名",autocomplete="on") }}
+            </div>
+            <div class="layui-form-item">
+                {{ form.password(class="layui-input",placeholder="密码",autocomplete="on") }}
+            </div>
+            <div class="layui-form-item">
+                {{ form.submit(class="layui-btn layui-btn-normal",style="width: 240px;background-color: #227eaa;") }}
+            </div>
+        </form>
+        <p><a href="{{ url_for('main.index') }}">回到首页</a></p>
+    </div>
+
+    <script>
+        layui.use(['layer'], function(){
+                var layer = layui.layer;
+                {% for message in get_flashed_messages() %}
+                    layer.msg('{{ message }}');
+                {% endfor %}
+            });
+    </script>
+
+</body>
+</html>

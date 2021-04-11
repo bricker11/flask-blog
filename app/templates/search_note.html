@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import pager %}
+
+{% block content %}
+    <!-- 主体内容区 -->
+    <div class="layui-container">
+        <!-- 隐藏的搜索框，手机端显示 -->
+        <div class="phone-search layui-show-xs-block layui-hide-sm">
+            <form class="layui-form" method="post" id="search" action="#">
+                <div class="layui-inline input">
+                    <input type="text" class="layui-input" placeholder="请输入关键词">
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-btn-sm layui-btn-primary"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </form>
+        </div>
+        <!-- 主体内容区 -->
+        <div class="layui-row layui-col-space15">
+            <!-- 左侧内容区 -->
+            <div class="layui-col-md9 layui-col-lg9">
+                <!-- 文章列表 -->
+                {% for note in notes %}
+                    <div class="note-card">
+                        <a href="javascript:;"> <!--笔记直接显示全部内容，故不需跳转详情页-->
+                            <h2>{{ note.title }}</h2>
+                        </a>
+                        <div class="note-content">
+                            {{ note.content_html|safe }}
+                        </div>
+                        <div class="note-msg">
+                            <span>
+                                <i class="layui-icon">&#xe705;</i>
+                                <a href="{{ url_for('main.category_note',cate_id=note.category.id) }}">{{ note.category.name }}</a>
+                            </span>
+                            <span>
+                                <i class="layui-icon">&#xe68d;</i>
+                                <a href="javascript:;">{{ note.date|strftime }}</a>
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if not notes %}
+                    <div class="note-card">
+                        <p style="margin-top: 30px;text-align: center">没有找到相关内容！</p>
+                    </div>
+                {% else %}
+                    <!-- 分页导航 -->
+                    {{ pager(pagination,'main.search_note') }}
+                {% endif %}
+            </div>
+            <!-- 右侧侧边栏 -->
+            {% include '_sidebar_note.html' %}
+        </div>
+    </div>
+{% endblock content %}
