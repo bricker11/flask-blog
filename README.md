@@ -267,3 +267,7 @@ virtualenv = /var/www/blog/venv
 uwsgi --ini uwsgi.ini   #启动
 uwsgi --stop uwsgi.pid  #停止
 ```
+
+
+
+部署效果：我的博客：https://tryblog.top
