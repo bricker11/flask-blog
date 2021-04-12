@@ -4,7 +4,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'The fucking hello world!'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess'
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
     MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in \
@@ -47,6 +47,23 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI ="mysql+pymysql://user:123456@111.67.198.221:3306/BMIS?"
+
+
+#任务配置类
+class SchedulerConfig(object):
+    JOBS = [
+        {
+            'id': 'task1', # 任务id
+            'func': 'app.timer:post_baidu_urls', # 任务执行程序
+            'args': None, # 执行程序参数
+            'trigger': {
+              'type': 'cron',
+              'hour': '5',
+              'minute': '0',
+              'second': '0'
+            }
+        }
+    ]
 
 
 config = {

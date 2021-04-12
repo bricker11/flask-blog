@@ -35,6 +35,7 @@ def index(page):
         img = Image.open(img_path)
         img = img.resize((480, 270))
         img.save(img_path)
+
     # 分页
     per_page = current_app.config['FLASKY_POSTS_PER_PAGE']
     pagination = Post.query.filter_by(draft_flag=False).order_by(Post.date.desc()).paginate(page,per_page=per_page)
@@ -52,7 +53,7 @@ def index(page):
 
 # 正文页
 @main.route('/post/<int:post_id>',defaults={'page':1},methods=['GET','POST'])
-@main.route('/post/<int:post_id>/',defaults={'page':1},methods=['GET','POST'])
+#@main.route('/post/<int:post_id>/',defaults={'page':1},methods=['GET','POST'])
 @main.route('/post/<int:post_id>/<int:page>',methods=['GET','POST'])
 def post(post_id,page):
     post = Post.query.filter_by(id=post_id).first()
@@ -154,9 +155,9 @@ def about():
 
 # 文章使用的分类和标签
 # 分类页
-# 当传入 5 时，会自动加上 / ,变成 5/ ,导致路由匹配失败（why?），故这里增加一条结尾带 / 的路由
+# 当传入 5 时，会自动加上 / ,变成 5/ ,导致路由匹配失败（why?），故这里增加一条结尾带 / 的路由 (chrome 308重定向到 / ，清除本地缓存即可)
 @main.route('/category/<int:cate_id>',defaults={'page':1})
-@main.route('/category/<int:cate_id>/',defaults={'page':1})
+#@main.route('/category/<int:cate_id>/',defaults={'page':1})
 @main.route('/category/<int:cate_id>/<int:page>')
 def category(cate_id,page):
     # 分页
@@ -177,7 +178,7 @@ def category(cate_id,page):
 
 # 标签页
 @main.route('/tag/<int:tag_id>',defaults={'page':1})
-@main.route('/tag/<int:tag_id>/',defaults={'page':1})
+#@main.route('/tag/<int:tag_id>/',defaults={'page':1})
 @main.route('/tag/<int:tag_id>/<int:page>')
 def tag(tag_id,page):
     tag = Tag.query.filter_by(id=tag_id).first()
@@ -233,7 +234,7 @@ def tag(tag_id,page):
 # 笔记使用的分类和标签
 # 分类页
 @main.route('/category_note/<int:cate_id>',defaults={'page':1})
-@main.route('/category_note/<int:cate_id>/',defaults={'page':1})
+#@main.route('/category_note/<int:cate_id>/',defaults={'page':1})
 @main.route('/category_note/<int:cate_id>/<int:page>')
 def category_note(cate_id,page):
     # 分页
@@ -253,7 +254,7 @@ def category_note(cate_id,page):
 
 # 标签页
 @main.route('/tag_note/<int:tag_id>',defaults={'page':1})
-@main.route('/tag_note/<int:tag_id>/',defaults={'page':1})
+#@main.route('/tag_note/<int:tag_id>/',defaults={'page':1})
 @main.route('/tag_note/<int:tag_id>/<int:page>')
 def tag_note(tag_id,page):
     tag = Tag.query.filter_by(id=tag_id).first()
