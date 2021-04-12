@@ -166,8 +166,9 @@
         $('#pic-list #filename').on('click',function (e){
             var filename = e.currentTarget.dataset['filename']
             var url = e.currentTarget.dataset['url']
-            var link = '![' + filename + '](' + url + ')';
+            var link = '![' + filename + '](' + '/uploads' + url + ')';
             testEditor.replaceSelection(link)
+            console.log('{{ url_for('static',filename='uploads') }}')
         })
 
         $('#pic-list i').on('click',function (e){
