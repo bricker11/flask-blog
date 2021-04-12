@@ -1,7 +1,5 @@
 ### 基于flask + layui + sqlite的个人博客系统（前台+后台）
 
-![前台首页.png](snapshot/前台首页.png)
-
 #### 一、主要特点
 
 - 支持markdown
