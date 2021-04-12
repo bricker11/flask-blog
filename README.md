@@ -271,3 +271,4 @@ uwsgi --stop uwsgi.pid  #停止
 
 
 部署效果：我的博客：https://tryblog.top
+
