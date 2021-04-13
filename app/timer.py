@@ -1,5 +1,6 @@
 # -*— coding:utf-8 -*—
-from .models import Post
+from .models import Post, Note
+from config import Config
 from datetime import datetime
 import requests
 #定义任务执行程序
@@ -7,9 +8,16 @@ def post_baidu_urls():
     # 提交收录链接
     url = 'http://data.zz.baidu.com/urls?site=https://www.tryblog.top&token=GNsd5RAc8GUDZsiT'
     cposts = Post.query.all()
-    data = '\nhttps://www.tryblog.top/note.html'
+    cnotes = len(Note.query.all())
+    if (cnotes % Config.FLASKY_POSTS_PER_PAGE) != 0:
+        pages = int(cnotes / Config.FLASKY_POSTS_PER_PAGE) + 1
+    else:
+        pages = cnotes / Config.FLASKY_POSTS_PER_PAGE
+    data = ''
     for post in cposts:
         data = data + '\nhttps://www.tryblog.top/post' + str(post.id) + '.html'
+    for page in range(pages):
+        data = data + '\nhttps://www.tryblog.top/note' + str(page+1) + '.html'
     headers = {'User-Agent': 'curl/7.12.1',
                'Host': 'data.zz.baidu.com',
                'Content-Type': 'text/plain',
