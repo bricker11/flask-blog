@@ -73,11 +73,44 @@
             {% include '_sidebar.html' %}
         </div>
     </div>
+    <div class="layui-layer-wrap" style="text-align: center" id="orgimg" hidden>
+        <img class="layui-hide-xs" style="max-width: 1080px;max-height: 720px" src="">
+        <img class="layui-hide-md" style="max-width: 375px;max-height: 290px" src="">
+    </div>
+
 {% endblock content %}
 
 {% block script %}
     {{ super() }}
     <script>
+
+        // 大图弹出层
+        $(".post-content img").mouseover(function (){
+            $(this).css("cursor","zoom-in");
+        })
+
+        $(".post-content img").on('click',function (e){
+            var url = e.target.currentSrc;
+            $("#orgimg img").attr('src',url)
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area: ['auto'],
+                skin: 'layui-layer-nobg', //没有背景色
+                shadeClose: true,
+                content: $('#orgimg'),
+                success: function (layero, index){
+                    $("#orgimg img").mouseover(function (){
+                        $(this).css("cursor","zoom-out");
+                    })
+                    $("#orgimg img").on('click',function (){
+                        layer.close(index)
+                    })
+                }
+            });
+        })
+
         // 正文图片居中模块
         var node = $('p');
         var len = $('p').length
@@ -89,6 +122,21 @@
 
         // 渲染文中表格
         $("table").attr('class','layui-table')
+
+        // 渲染``语法产生的<code>样式
+        var node = $('p > code');
+        len = $('code').length
+        for(var i=0; i<len; i++)
+        {
+            if($(node[i]).attr('class') == undefined)
+            {
+                $(node[i]).css('background-color','#abe6f8')
+                $(node[i]).css('border-radius','4px')
+                $(node[i]).css('margin','0px 3px')
+                $(node[i]).css('padding','1px 3px')
+                $(node[i]).css('font-family','monospace')
+            }
+        }
 
         // 评论模块
         $('#comment_board #cmt_submit').on('click',function(){

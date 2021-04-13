@@ -372,10 +372,15 @@ body {
     word-break: break-all;
 }
 
-.post-content h4,.post-content h5,.post-content h6 {
+.post-content h4 {
     line-height: 2em;
-    color: #16a763;
+    color: #1bb36b;
     font-weight: 550;
+}
+
+.post-content h5,.post-content h6 {
+    line-height: 2em;
+    color: #f67730;
 }
 
 .post-content p {

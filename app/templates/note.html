@@ -76,5 +76,20 @@
 
         // 渲染文中表格
         $("table").attr('class','layui-table')
+
+        // 渲染``语法产生的<code>样式
+        var node = $('p > code');
+        len = $('code').length
+        for(var i=0; i<len; i++)
+        {
+            if($(node[i]).attr('class') == undefined)
+            {
+                $(node[i]).css('background-color','#abe6f8')
+                $(node[i]).css('border-radius','4px')
+                $(node[i]).css('margin','0px 3px')
+                $(node[i]).css('padding','1px 3px')
+                $(node[i]).css('font-family','monospace')
+            }
+        }
     </script>
 {% endblock script %}
