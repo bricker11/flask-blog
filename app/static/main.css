@@ -6,7 +6,7 @@ body {
     color: #4e4e4e;
     -webkit-font-smoothing: antialiased;
     -webkit-overflow-scrolling: touch;
-    line-height: 1.6
+    line-height: 1.8em;
 }
 
 /*-------------------------------------------------- header样式 --------------------------------------------------*/
@@ -367,6 +367,7 @@ body {
 
 /*正文页文章正文各级标题样式*/
 .post-content h1,.post-content h2,.post-content h3 {
+    line-height: 2.5em;
     color: #227eaa;
     font-weight: 550;
     word-break: break-all;
@@ -381,10 +382,6 @@ body {
 .post-content h5,.post-content h6 {
     line-height: 2em;
     color: #f67730;
-}
-
-.post-content p {
-    line-height: 1.6em;
 }
 
 .post-content a {
