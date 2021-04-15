@@ -2,14 +2,12 @@ alembic==1.5.6
 APScheduler==3.7.0
 asgiref==3.3.1
 beautifulsoup4==4.9.3
-bleach==3.3.0
 blinker==1.4
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
 coverage==5.4
 cycler==0.10.0
-Django==3.1.7
 dnspython==2.1.0
 dominate==2.6.0
 email-validator==1.1.2
@@ -47,7 +45,6 @@ mccabe==0.6.1
 numpy==1.19.5
 olefile==0.46
 packaging==20.9
-PIL==1.1.7
 Pillow==8.2.0
 pillowcase==2.0.0
 pyglet==1.5.14
