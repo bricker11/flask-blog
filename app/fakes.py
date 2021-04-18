@@ -17,7 +17,7 @@ def md2html(content_md):
 
 
 def fake_user():
-    admin = User(username='admin',password='acer1215',title='知行合一',subtitle='点滴记录',nickname='一蓑烟雨',about='编程爱好者，Web开发爱好者，此博客为练习作品...')
+    admin = User(username='admin',password='123456',title='知行合一',subtitle='点滴记录',nickname='一蓑烟雨',about='编程爱好者，Web开发爱好者，此博客为练习作品...')
     db.session.add(admin)
     db.session.commit()
 

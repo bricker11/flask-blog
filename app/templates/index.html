@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% from '_macros.html' import pager %}
 
+{% block metas %}
+{{ super() }}
+    <meta name="description" content="手工编织的个人博客，记录技术和人生修行路上的点滴进步">
+{% endblock metas %}
+
 {% block content %}
     <div class="layui-container">
         <!-- 隐藏的搜索框，手机端显示 -->

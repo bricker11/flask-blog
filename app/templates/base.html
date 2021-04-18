@@ -3,12 +3,13 @@
 <head>
 {% block head %}
     {% block title %}
-        <title>{{ admin.title }}</title>
+        <title>个人博客 {{ admin.title }}</title>
     {% endblock title %}
 
     {% block metas %}
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="sogou_site_verification" content="UWErlvMKph"/>
     {% endblock metas %}
 
     {% block styles %}
@@ -20,6 +21,13 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='layui/css/layui.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='highlight/styles/atom-one-dark.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+		
+		<script>
+		(function(){
+		var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+		document.write('<script src="' + src + '" id="sozz"><\/script>');
+		})();
+		</script>
     {% endblock styles %}
 {% endblock head %}
 </head>

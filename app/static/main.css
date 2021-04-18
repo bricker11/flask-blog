@@ -290,7 +290,7 @@ body {
 
 .footer p {
     box-sizing: border-box;
-    padding: 15px;
+    padding: 13px;
     color: #FFF;
     text-align: center;
 }
@@ -368,20 +368,20 @@ body {
 /*正文页文章正文各级标题样式*/
 .post-content h1,.post-content h2,.post-content h3 {
     line-height: 2.5em;
-    color: #227eaa;
+    color: #000000;
     font-weight: 550;
     word-break: break-all;
 }
 
 .post-content h4 {
     line-height: 2em;
-    color: #1bb36b;
+    color: #1E9FFF;
     font-weight: 550;
 }
 
 .post-content h5,.post-content h6 {
     line-height: 2em;
-    color: #f67730;
+    color: #f6886d;
 }
 
 .post-content a {
@@ -691,7 +691,7 @@ body {
 .admin-footer p {
     text-align: center;
     color: rgba(255,255,255,.7);
-    padding: 10px 0;
+    padding: 8px 0;
 }
 
 /*-------------------------------------------------- 后台子页面样式 --------------------------------------------------*/
