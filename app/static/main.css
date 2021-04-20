@@ -78,7 +78,6 @@ body {
 .post-card h2 {
     color: #227eaa;
     padding: 10px 0;
-    font-weight: 550;
     word-break: break-all;
 }
 
@@ -189,7 +188,6 @@ body {
 .side-avata .nickname {
     margin-top: 50px;
     text-align: center;
-    font-weight: 550;
     color: #666;
 }
 
@@ -201,7 +199,6 @@ body {
 .side-avata .link a {
     display: inline-block;
     margin: 10px 20px;
-    font-weight: 550;
     color: #666;
 }
 
@@ -210,7 +207,6 @@ body {
     border-bottom: 1px solid #eee;
     width: 100%;
     color: #666;
-    font-weight: 600;
     padding-bottom: 5px;
     margin-bottom: 5px;
     overflow: hidden;
@@ -318,7 +314,6 @@ body {
 /*正文页标题*/
 .post-title {
     padding: 10px 5px;
-    font-weight: 550;
 }
 
 /*正文页文章描述信息*/
@@ -369,14 +364,12 @@ body {
 .post-content h1,.post-content h2,.post-content h3 {
     line-height: 2.5em;
     color: #000000;
-    font-weight: 550;
     word-break: break-all;
 }
 
 .post-content h4 {
     line-height: 2em;
     color: #1E9FFF;
-    font-weight: 550;
 }
 
 .post-content h5,.post-content h6 {
@@ -444,7 +437,6 @@ body {
 .note-card h2 {
     color: #f67730;
     padding: 5px 0;
-    font-weight: 550;
     word-break: break-all;
 }
 
