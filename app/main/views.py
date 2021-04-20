@@ -6,7 +6,7 @@ from app import db
 # 导入models时，models中定义的load_user生效
 from app.models import User, Post, Note, Category, Tag, Comment, Message
 from datetime import datetime
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, func
 import os, requests, re
 from PIL import Image
 
@@ -57,6 +57,22 @@ def index(page):
 @main.route('/post/<int:post_id>/<int:page>',methods=['GET','POST'])
 def post(post_id,page):
     post = Post.query.filter_by(id=post_id).first()
+    prev_id = post_id - 1
+    next_id = post_id + 1
+    id_max = db.session.query(func.max(Post.id)).one()[0]
+    while True:
+        post_prev = Post.query.filter_by(id=prev_id).first()
+        if post_prev != None or prev_id == 0:
+            break
+        else:
+            prev_id = prev_id - 1
+    while True:
+        post_next = Post.query.filter_by(id=next_id).first()
+        if post_next != None or next_id == id_max+1:
+            break
+        else:
+            next_id = next_id + 1
+    post_pn = [post_prev,post_next]
     post.read_count = post.read_count + 1
     db.session.commit()
     # 分页
@@ -71,7 +87,7 @@ def post(post_id,page):
     tags = Tag.query.all()
     # 管理员信息
     admin = User.query.first()
-    return render_template('post.html',post=post,comments=comments,pagination=pagination,replies=replies,
+    return render_template('post.html',post=post,post_pn=post_pn,comments=comments,pagination=pagination,replies=replies,
                            posts=posts,categorys=categorys,tags=tags,form=form,
                            admin=admin,datetime=datetime.now())
 

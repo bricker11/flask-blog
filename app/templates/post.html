@@ -68,6 +68,22 @@
                             {% endif %}
                         </span>
                     </div>
+                    <div class="post-tag">
+                        <div>
+                            {% if post_pn[0] %}
+                                <a href="{{ url_for('main.post',post_id=post_pn[0].id) }}">上一篇：{{ post_pn[0].title }}</a>
+                            {% else %}
+                                <span>上一篇：没有上一篇了~</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if post_pn[1] %}
+                                <a href="{{ url_for('main.post',post_id=post_pn[1].id) }}">下一篇：{{ post_pn[1].title }}</a>
+                            {% else %}
+                                <span>下一篇：没有下一篇了~</span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
                 <div class="message-list">
                     <!-- 显示一页的评论列表 -->
