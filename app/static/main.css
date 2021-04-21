@@ -320,6 +320,7 @@ body {
 .post-title h1 {
     color: #404040;
     line-height: 1.5em;
+    word-break: break-all;
 }
 
 /*正文页文章描述信息*/
