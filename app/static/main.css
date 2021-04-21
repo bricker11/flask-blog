@@ -316,6 +316,10 @@ body {
     padding: 10px 5px;
 }
 
+.post-title h1 {
+    color: #404040;
+}
+
 /*正文页文章描述信息*/
 .post-msg {
     padding: 10px 5px;
@@ -336,6 +340,7 @@ body {
 /*正文页文章正文部分*/
 .post-content {
     padding: 10px 5px;
+    font-size: 15px;
     /*text-align: justify;*/
 }
 
@@ -363,17 +368,27 @@ body {
 /*正文页文章正文各级标题样式*/
 .post-content h1,.post-content h2,.post-content h3 {
     line-height: 2.5em;
-    color: #000000;
+    color: #404040;
     word-break: break-all;
+}
+
+.post-content h2 {
+    font-size: 24px;
+}
+
+.post-content h3 {
+    font-size: 20px;
 }
 
 .post-content h4 {
     line-height: 2em;
+    font-size: 17px;
     color: #1E9FFF;
 }
 
 .post-content h5,.post-content h6 {
     line-height: 2em;
+    font-size: 15px;
     color: #f6886d;
 }
 
