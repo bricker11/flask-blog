@@ -16,6 +16,8 @@ class SettingForm(FlaskForm):
     subtitle = StringField('副标题', validators=[Length(max=64)])
     nickname = StringField('昵称', validators=[DataRequired(), Length(max=64)])
     about = TextAreaField('关于',validators=[DataRequired()])
+    old_password = PasswordField('原密码')
+    new_password = PasswordField('新密码')
     submit = SubmitField('修改')
 
 

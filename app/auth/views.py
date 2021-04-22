@@ -73,6 +73,16 @@ def setting():
         user.subtitle = form.subtitle.data
         user.nickname = form.nickname.data
         user.about = form.about.data
+        if form.old_password.data != '':
+            if user.verify_password(form.old_password.data):
+                if form.new_password.data != '':
+                    user.password = form.new_password.data
+                else:
+                    flash('新密码不能为空')
+                    return redirect(url_for('auth.setting'))
+            else:
+                flash('原密码不正确')
+                return redirect(url_for('auth.setting'))
         db.session.commit()
         flash('修改成功')
         return redirect(url_for('auth.setting'))
