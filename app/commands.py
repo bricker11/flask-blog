@@ -50,7 +50,7 @@ def register_commands(app):
 
         # 创建管理员账户
         click.echo('创建管理员账户... ')
-        admin = User(username='admin', password='acer1215', title='知行合一', subtitle='', nickname='一蓑烟雨',
+        admin = User(username='admin', password='123456', title='知行合一', subtitle='', nickname='一蓑烟雨',
                      about='编程爱好者，Web开发爱好者，此博客为练习作品...')
         db.session.add(admin)
         db.session.commit()
