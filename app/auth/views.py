@@ -106,7 +106,11 @@ def writepost():
         tags_id = form.tags.data.split(',')
         content_md = form.content_md.data
         content_html = md2html(content_md)
-        post = Post.query.filter_by(id=newpost_id).first()
+        if session.get('draft_id'):
+            real_id = session.get('draft_id')
+        else:
+            real_id = newpost_id
+        post = Post.query.filter_by(id=real_id).first()
         if post:
             post.title = form.title.data
             post.category_id = form.category.data
@@ -369,7 +373,7 @@ def save_draft_api():
     tags_id = post_tag.split(',')
     content_md = post_content
     content_html = md2html(content_md)
-    if code == 0:
+    if code == 0 and not session.get('draft_id'):
         post = Post(id=post_id,title=post_title,content_html=content_html,content_md=content_md,
                     category_id=post_category,date=datetime.now(),draft_flag=True)
         if tags_id != ['']:
@@ -378,6 +382,7 @@ def save_draft_api():
                 post.tags.append(tag)
         db.session.add(post)
         db.session.commit()
+        session['draft_id'] = post_id
     else:
         post = Post.query.filter_by(id=post_id).first()
         post.title = post_title
