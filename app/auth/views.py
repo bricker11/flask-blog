@@ -132,6 +132,7 @@ def writepost():
                     post.tags.append(tag)
             db.session.add(post)
             db.session.commit()
+        session['draft_id'] = 0
         flash('发布成功')
         return redirect(url_for('auth.index'))
     return render_template('admin/writepost.html',form=form,tags=tags,newpost_id=newpost_id)
@@ -373,6 +374,7 @@ def save_draft_api():
     tags_id = post_tag.split(',')
     content_md = post_content
     content_html = md2html(content_md)
+    print(session.get('draft_id'))
     if code == 0 and not session.get('draft_id'):
         post = Post(id=post_id,title=post_title,content_html=content_html,content_md=content_md,
                     category_id=post_category,date=datetime.now(),draft_flag=True)
